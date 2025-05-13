@@ -41,6 +41,7 @@ export default function PetsPage() {
       <div className="px-4 pt-6 pb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 auto-rows-min gap-6">
         {currentItems.map(pet => (
           <PetCard
+            id={pet.id} 
             key={pet.id}
             image={pet.image}
             name={pet.name}

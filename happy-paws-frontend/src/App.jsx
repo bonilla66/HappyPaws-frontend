@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Landing from "./pages/landingpage.jsx"
 import MainLayout from './components/layouts/mainlayout.jsx';
 import PetsPage from "./pages/petspage.jsx";
+import InfoPagePet from "./pages/infopetpage.jsx";
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
       <Route element={<MainLayout />}>
         <Route index element={<Landing />} />
         <Route path="mascotas" element={<PetsPage />} />
+        <Route path="info" element={<InfoPagePet />} />
         </Route>
     </Routes>
   )
