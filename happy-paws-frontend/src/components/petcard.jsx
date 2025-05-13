@@ -4,7 +4,7 @@ import { Link }       from 'react-router-dom'
 
 export default function PetCard({ id, image, name, description }) {
   return (
-    <div className="flex bg-rosadito rounded-[24px] shadow-lg max-w-md w-full h-52 mx-auto overflow-hidden">
+    <div className="flex bg-rosadito rounded-[24px] shadow-2xl max-w-md w-full h-52 mx-auto overflow-hidden">
       <div className="bg-rosadito p-2 rounded-2xl flex items-center justify-center flex-shrink-0 w-44 h-48">
         <img
           src={image}

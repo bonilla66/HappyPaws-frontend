@@ -6,10 +6,12 @@ export default function Navbar() {
   return (
     <nav className="bg-amarillito">
       <div className="container px-0 flex items-center justify-between h-14">
-        <div className="flex items-center space-x-2 pl-4 ml-2">
+        <Link
+          to="/"
+          className="flex items-center space-x-2 pl-4 ml-2 cursor-pointer">
           <img src={logo} alt="HappyPaws logo" className="w-8 h-8" />
           <span className="text-azulito font-bold text-xl">HappyPaws</span>
-        </div>
+        </Link>
         <ul className="hidden md:flex space-x-4 text-negrito text-lg">
           <li>
             <Link to="/mascotas" className="text-azulito">
