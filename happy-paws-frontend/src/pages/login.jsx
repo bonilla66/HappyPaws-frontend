@@ -7,21 +7,14 @@ import { UseForm } from "../hooks/form";
 
 export default function LoginPage() {
   const initialValues = { email: "", password: "" };
-
-  const validate = (values) => {
-    if (!values.email || !values.password) {
-      return "Por favor completa todos los campos";
-    }
-    return null;
-  };
-
-  const onSubmit = () => {
-    toast.success("¡Bienvenido de nuevo!");
-  };
+  const validate = (vals) =>
+    !vals.email || !vals.password ? "Por favor completa todos los campos" : null;
+  const onSubmit = () => toast.success("¡Bienvenido de nuevo!");
 
   const { values, handleChange, handleSubmit } = UseForm(
     initialValues,
-    validate
+    validate,
+    { showErrorToast: true }
   );
 
   return (
@@ -34,7 +27,7 @@ export default function LoginPage() {
             <img
               src={BannerImage}
               alt="Banner mascotas"
-              className="w-full h-full object-cover" />
+              className="w-full h-full object-cover"/>
           </div>
           <div className="md:w-1/2 p-12 flex flex-col justify-center space-y-6">
             <h2 className="text-4xl font-bold text-azulito text-center">
@@ -43,26 +36,24 @@ export default function LoginPage() {
             <p className="text-negrito text-center">
               Inicia sesión para seguir ayudando a encontrar hogares felices
             </p>
-            <form
-              onSubmit={(e) => handleSubmit(e, onSubmit)}
-              className="space-y-6">
+            <form onSubmit={(e) => handleSubmit(e, onSubmit)} className="space-y-6">
               <div className="flex flex-col">
-                <label className="mb-1 text-gray-400">Correo electrónico</label>
+                <label className="mb-1 text-grisito">Correo electrónico</label>
                 <input
                   name="email"
                   value={values.email}
                   onChange={handleChange}
                   type="email"
-                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300" />
+                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-gray-400">Contraseña</label>
+                <label className="mb-1 text-grisito">Contraseña</label>
                 <input
                   name="password"
                   value={values.password}
                   onChange={handleChange}
                   type="password"
-                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300" />
+                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
               </div>
               <button
                 type="submit"
@@ -72,9 +63,7 @@ export default function LoginPage() {
             </form>
             <p className="text-center text-sm text-negrito">
               ¿Aún no tienes cuenta?{" "}
-              <Link
-                to="/signup"
-                className="text-azulito font-medium hover:underline">
+              <Link to="/signup" className="text-azulito font-medium hover:underline">
                 Regístrate aquí
               </Link>
             </p>

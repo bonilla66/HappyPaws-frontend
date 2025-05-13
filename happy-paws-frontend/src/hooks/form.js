@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-export function UseForm(initialValues, validateOnSubmit) {
+export function UseForm(initialValues, validate, { showErrorToast = false } = {}) {
   const [values, setValues] = useState(initialValues);
 
   const handleChange = (e) => {
@@ -14,12 +14,12 @@ export function UseForm(initialValues, validateOnSubmit) {
 
   const handleSubmit = (e, onSubmit) => {
     e.preventDefault();
-    const error = validateOnSubmit(values);
+    const error = validate(values);
     if (error) {
-      toast.error(error);
+      if (showErrorToast) toast.error(error);
       return;
     }
-    onSubmit(values);
+    onSubmit();
   };
 
   return { values, handleChange, handleSubmit };

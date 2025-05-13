@@ -19,12 +19,12 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link to="/sobre-nosotros" className="text-azulito">
+            <Link to="/aboutus" className="text-azulito">
               sobre nosotros
             </Link>
           </li>
           <li>
-            <Link to="/contactanos" className="text-azulito">
+            <Link to="/contactus" className="text-azulito">
               contáctanos
             </Link>
           </li>

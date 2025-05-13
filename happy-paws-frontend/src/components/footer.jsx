@@ -14,12 +14,12 @@ export default function Footer() {
         <div className="mt-4 md:mt-0 text-lg">
           <ul className="flex space-x-6 text-azulito">
             <li>
-              <a href="/sobre-nosotros" className="hover:underline">
+              <a href="/aboutus" className="hover:underline">
                 sobre nosotros
               </a>
             </li>
             <li>
-              <a href="/contactanos" className="hover:underline">
+              <a href="/contactus" className="hover:underline">
                 contáctanos
               </a>
             </li>
