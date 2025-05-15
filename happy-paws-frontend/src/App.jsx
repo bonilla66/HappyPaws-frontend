@@ -13,7 +13,8 @@ import AboutUs from "./pages/aboutuspage.jsx";
 import ContactPage from "./pages/contactpage.jsx";
 import { AuthProvider } from "./context/authcontext.jsx";
 import ProfilePage from "./pages/profilepage.jsx";
-
+import ProfilePageAdmin from "./pages/profilepageadmin.jsx";
+import AddPetForm from "./pages/addpetform.jsx";
 
 export default function App() {
   return (
@@ -27,6 +28,8 @@ export default function App() {
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
           <Route path="profilepage" element={<ProfilePage/>} />
+          <Route path="profilepageadmin" element={<ProfilePageAdmin/>} />
+          <Route path="addpetform" element={<AddPetForm/>}/>
         </Route>
         <Route path="login"  element={<LoginPage  />} />
         <Route path="signup" element={<SignUpPage />} />

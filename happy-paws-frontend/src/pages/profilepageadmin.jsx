@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard } from "lucide-react";
 
-export default function ProfilePage() {
+export default function ProfilePageAdmin() {
     const [editing, setEditing] = useState(false);
     const [formValues, setFormValues] = useState({
         nombre: "Alejandro Ortega",
@@ -116,7 +116,7 @@ export default function ProfilePage() {
                     </button>
                 </div>
                  <div className="flex-1 space-y-6">
-                    <div className="px-6">
+                    <div className="p-6">
                         <h3 className="text-xl font-semibold text-negrito mb-2">Solicitudes</h3>
                         <table className="w-full table-fixed">
                             <thead>
@@ -145,8 +145,8 @@ export default function ProfilePage() {
                             </table>
                         </div>
                     </div>
-                    <div className="px-6">
-                        <h3 className="text-xl font-semibold text-negrito">Historial de adopciones</h3>
+                    <div className="p-6">
+                        <h3 className="text-xl font-semibold text-negrito mb-2">Historial de adopciones</h3>
                         <table className="w-full table-fixed">
                             <thead>
                                 <tr className="border-b border-grisito">
