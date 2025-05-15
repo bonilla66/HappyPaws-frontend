@@ -11,6 +11,8 @@ import SignUpPage  from "./pages/signup.jsx";
 import AdoptionFormPage from "./pages/adoptpage.jsx"
 import AboutUs from "./pages/aboutuspage.jsx";
 import ContactPage from "./pages/contactpage.jsx";
+import { AuthProvider } from "./context/authcontext.jsx";
+import ProfilePage from "./pages/profilepage.jsx";
 
 
 export default function App() {
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="adoptform" element={<AdoptionFormPage />} />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
+          <Route path="profilepage" element={<ProfilePage/>} />
         </Route>
         <Route path="login"  element={<LoginPage  />} />
         <Route path="signup" element={<SignUpPage />} />
