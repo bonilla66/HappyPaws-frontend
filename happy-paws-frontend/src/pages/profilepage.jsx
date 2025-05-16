@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard } from "lucide-react";
 
 export default function ProfilePage() {
+    const navigate = useNavigate();
     const [editing, setEditing] = useState(false);
     const [formValues, setFormValues] = useState({
         nombre: "Alejandro Ortega",
@@ -16,7 +19,16 @@ export default function ProfilePage() {
         setFormValues(v => ({ ...v, [name]: value }));
     };
 
-    //se lo pedi a chatxd
+    const handleSave = () => {
+        const { nombre, correo, telefono, dui } = formValues;
+        if (!nombre || !correo || !telefono || !dui) {
+            toast.error("Por favor, complete todos los campos");
+        } else {
+            toast.success("Cambios guardados");
+            setEditing(false);
+        }
+    };
+
     const solicitudes = [...Array(10)].map((_, i) => ({
         mascota: `Mascota ${i+1}`,
         fecha: `2025-05-${(i+1).toString().padStart(2, '0')}`,
@@ -42,7 +54,7 @@ export default function ProfilePage() {
                         <MoreHorizontal size={24} />
                     </button>
                     <div className="flex items-center gap-4 mb-4 mt-6">
-                        <UserRound size={120} className="text-negrito" />
+                        <UserRound size={120} className="text-negrito"/>
                         <div>
                             {editing ? (
                                 <input
@@ -50,8 +62,7 @@ export default function ProfilePage() {
                                     name="nombre"
                                     value={formValues.nombre}
                                     onChange={handleChange}
-                                    className="w-full border-b border-grisito focus:outline-none"
-                                />
+                                    className="w-full border-b border-grisito focus:outline-none"/>
                             ) : (
                                 <h2 className="text-2xl font-semibold text-negrito mb-1">{formValues.nombre}</h2>
                             )}
@@ -71,8 +82,7 @@ export default function ProfilePage() {
                                     name="correo"
                                     value={formValues.correo}
                                     onChange={handleChange}
-                                    className=" w-full border-b border-grisito focus:outline-none"
-                                />
+                                    className=" w-full border-b border-grisito focus:outline-none"/>
                             ) : (
                                 <p className="text-xl text-negrito">{formValues.correo}</p>
                             )}
@@ -111,11 +121,20 @@ export default function ProfilePage() {
                             )}
                         </div>
                     </div>
-                    <button className="text-negrito border border-grisito rounded-full px-4 py-1 text-sm hover:bg-grisito transition relative left-120">
+                    {editing && (
+                        <button
+                            onClick={handleSave}
+                            className="bg-moradito text-negrito rounded-full px-4 py-1 text-sm hover:bg-purple-300 transition mr-4">
+                            Guardar cambios
+                        </button>
+                    )}
+                    <button
+                        onClick={() => navigate("/")}
+                        className="text-negrito border border-grisito rounded-full px-4 py-1 text-sm hover:bg-grisito transition ml-2">
                         Cerrar sesión
                     </button>
                 </div>
-                 <div className="flex-1 space-y-6">
+                <div className="flex-1 space-y-6">
                     <div className="px-6">
                         <h3 className="text-xl font-semibold text-negrito mb-2">Solicitudes</h3>
                         <table className="w-full table-fixed">
@@ -172,7 +191,7 @@ export default function ProfilePage() {
                             </table>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
     );

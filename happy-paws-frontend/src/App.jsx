@@ -13,8 +13,9 @@ import AboutUs from "./pages/aboutuspage.jsx";
 import ContactPage from "./pages/contactpage.jsx";
 import { AuthProvider } from "./context/authcontext.jsx";
 import ProfilePage from "./pages/profilepage.jsx";
-import ProfilePageAdmin from "./pages/profilepageadmin.jsx";
+import AdminPage from "./pages/adminpage.jsx";
 import AddPetForm from "./pages/addpetform.jsx";
+import ColaboradorPage from "./pages/colaboradorpage.jsx";
 
 export default function App() {
   return (
@@ -28,8 +29,9 @@ export default function App() {
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
           <Route path="profilepage" element={<ProfilePage/>} />
-          <Route path="profilepageadmin" element={<ProfilePageAdmin/>} />
+          <Route path="adminpage" element={<AdminPage/>} />
           <Route path="addpetform" element={<AddPetForm/>}/>
+          <Route path="colaboradorpage" element={<ColaboradorPage/> }/>
         </Route>
         <Route path="login"  element={<LoginPage  />} />
         <Route path="signup" element={<SignUpPage />} />
