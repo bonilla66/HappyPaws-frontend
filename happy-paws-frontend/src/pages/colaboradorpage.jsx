@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { UserRound, MoreHorizontal, Mail, Phone, IdCard, Eye} from "lucide-react";
+import { UserRound, MoreHorizontal, Mail, Phone, IdCard, Eye } from "lucide-react";
 
 export default function ColaboradorPage() {
   const navigate = useNavigate();
@@ -141,8 +141,9 @@ export default function ColaboradorPage() {
       </div>
       <div className="w-4/5 p-6 space-y-6">
         <h2 className="text-2xl font-semibold text-negrito mb-2 mt-0">
-          Panel de administración
+          Panel de Administración
         </h2>
+
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Mascotas</h3>
           <table className="w-full table-fixed mb-2">
@@ -164,9 +165,9 @@ export default function ColaboradorPage() {
                     <td className="px-4 py-2 text-left">{p.nombre}</td>
                     <td className="px-4 py-2 text-left">{p.raza}</td>
                     <td className="px-4 py-2 text-left">
-                      <button className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
-                        <Eye size={16} /><span className="ml-1">Ver más</span>
-                      </button>
+                      <Link to="/petsetting" className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
+                        <Eye size={16}/><span className="ml-1">Ver más</span>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -174,6 +175,7 @@ export default function ColaboradorPage() {
             </table>
           </div>
         </section>
+
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Solicitudes de Adopción</h3>
           <table className="w-full table-fixed mb-2">
@@ -197,9 +199,9 @@ export default function ColaboradorPage() {
                     <td className="px-4 py-2 text-left">{r.mascota}</td>
                     <td className="px-4 py-2 text-left">{r.estado}</td>
                     <td className="px-4 py-2 text-left">
-                      <button className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
-                        <Eye size={16} /><span className="ml-1">Ver más</span>
-                      </button>
+                      <Link to="/solisetting" className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
+                        <Eye size={16}/><span className="ml-1">Ver más</span>
+                      </Link>
                     </td>
                   </tr>
                 ))}

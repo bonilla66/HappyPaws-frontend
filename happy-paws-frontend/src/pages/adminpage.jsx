@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard, Eye } from "lucide-react";
 
@@ -65,8 +65,7 @@ export default function AdminPage() {
       <div className="w-1/5 border-r border-grisito p-6 relative">
         <button
           onClick={() => setEditing(e => !e)}
-          className="absolute top-4 right-4 text-negrito hover:text-grisito cursor-pointer"
-        >
+          className="absolute top-4 right-4 text-negrito hover:text-grisito cursor-pointer">
           <MoreHorizontal size={24} />
         </button>
         <div className="flex items-center gap-4 mb-4 mt-6">
@@ -78,8 +77,7 @@ export default function AdminPage() {
                 name="nombre"
                 value={formValues.nombre}
                 onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
+                className="w-full border-b border-grisito focus:outline-none"/>
             ) : (
               <h2 className="text-xl font-semibold text-negrito mb-1">
                 {formValues.nombre}
@@ -100,8 +98,7 @@ export default function AdminPage() {
                 name="correo"
                 value={formValues.correo}
                 onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
+                className="w-full border-b border-grisito focus:outline-none"/>
             ) : (
               <p className="text-sm text-negrito">{formValues.correo}</p>
             )}
@@ -117,8 +114,7 @@ export default function AdminPage() {
                 name="telefono"
                 value={formValues.telefono}
                 onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
+                className="w-full border-b border-grisito focus:outline-none"/>
             ) : (
               <p className="text-sm text-negrito">{formValues.telefono}</p>
             )}
@@ -134,8 +130,7 @@ export default function AdminPage() {
                 name="dui"
                 value={formValues.dui}
                 onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
+                className="w-full border-b border-grisito focus:outline-none"/>
             ) : (
               <p className="text-sm text-negrito">{formValues.dui}</p>
             )}
@@ -144,15 +139,13 @@ export default function AdminPage() {
         {editing && (
           <button
             onClick={handleSave}
-            className="text-negrito border border-grisito rounded-full px-4 py-1 text-xs hover:bg-grisito cursor-pointer mb-4"
-          >
+            className="text-negrito border border-grisito rounded-full px-4 py-1 text-xs hover:bg-grisito cursor-pointer mb-4">
             Guardar cambios
           </button>
         )}
         <button
           onClick={() => navigate("/")}
-          className="ml-2 text-negrito border border-grisito rounded-full px-4 py-1 text-xs hover:bg-grisito cursor-pointer"
-        >
+          className="ml-2 text-negrito border border-grisito rounded-full px-4 py-1 text-xs hover:bg-grisito cursor-pointer">
           Cerrar sesión
         </button>
       </div>
@@ -165,10 +158,10 @@ export default function AdminPage() {
           <table className="w-full table-fixed mb-2">
             <thead>
               <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">ID</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Nombre</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Rol</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Acción</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">ID</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Nombre</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Rol</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Acción</th>
               </tr>
             </thead>
           </table>
@@ -181,9 +174,9 @@ export default function AdminPage() {
                     <td className="px-4 py-2 text-left">{u.nombre}</td>
                     <td className="px-4 py-2 text-left">{u.rol}</td>
                     <td className="px-4 py-2 text-left">
-                      <button className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
+                      <Link to="/usersetting" className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
                         <Eye size={16} /><span className="ml-1">Ver más</span>
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -196,10 +189,10 @@ export default function AdminPage() {
           <table className="w-full table-fixed mb-2">
             <thead>
               <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">ID</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Nombre</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Raza</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Acción</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">ID</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Nombre</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Raza</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Acción</th>
               </tr>
             </thead>
           </table>
@@ -212,9 +205,9 @@ export default function AdminPage() {
                     <td className="px-4 py-2 text-left">{p.nombre}</td>
                     <td className="px-4 py-2 text-left">{p.raza}</td>
                     <td className="px-4 py-2 text-left">
-                      <button className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
+                      <Link to="/petsetting" className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
                         <Eye size={16} /><span className="ml-1">Ver más</span>
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -227,11 +220,11 @@ export default function AdminPage() {
           <table className="w-full table-fixed mb-2">
             <thead>
               <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">ID</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Usuario</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Mascota</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Estado</th>
-                <th className="px-4 py-2 text-negrito text-left sticky top-0 bg-amarillito">Acción</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">ID</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Usuario</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Mascota</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Estado</th>
+                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">Acción</th>
               </tr>
             </thead>
           </table>
@@ -245,9 +238,9 @@ export default function AdminPage() {
                     <td className="px-4 py-2 text-left">{r.mascota}</td>
                     <td className="px-4 py-2 text-left">{r.estado}</td>
                     <td className="px-4 py-2 text-left">
-                      <button className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
+                      <Link to="/solisetting" className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito">
                         <Eye size={16} /><span className="ml-1">Ver más</span>
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
