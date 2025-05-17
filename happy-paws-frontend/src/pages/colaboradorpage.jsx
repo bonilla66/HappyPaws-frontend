@@ -143,7 +143,6 @@ export default function ColaboradorPage() {
         <h2 className="text-2xl font-semibold text-negrito mb-2 mt-0">
           Panel de Administración
         </h2>
-
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Mascotas</h3>
           <table className="w-full table-fixed mb-2">
@@ -175,7 +174,6 @@ export default function ColaboradorPage() {
             </table>
           </div>
         </section>
-
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Solicitudes de Adopción</h3>
           <table className="w-full table-fixed mb-2">

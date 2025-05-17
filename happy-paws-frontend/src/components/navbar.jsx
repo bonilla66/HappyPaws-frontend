@@ -3,8 +3,20 @@ import { Link } from "react-router-dom";
 import logo from "../assets/icon1.png";
 
 export default function Navbar() {
+  // const user = null;
+  const user = { nombre: "Alejandro Ortega", rol: "Admin" };
+
+  const firstName = user?.nombre.split(" ")[0];
+
+  const settingsRoute =
+    user?.rol === "Admin"
+      ? "/adminpage"
+      : user?.rol === "Colaborador"
+      ? "/colaboradorpage"
+      : "/profilepage";
+
   return (
-    <nav className="bg-amarillito">
+    <nav className="bg-amarillito relative">
       <div className="container px-0 flex items-center justify-between h-14">
         <Link
           to="/"
@@ -29,12 +41,20 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
-        <div className="pr-4 relative left-38">
-          <Link
-            to="/login"
-            className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
-            Iniciar sesión
-          </Link>
+        <div className="relative left-40 pr-4">
+          {!user ? (
+            <Link
+              to="/login"
+              className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
+              Iniciar sesión
+            </Link>
+          ) : (
+            <Link
+              to={settingsRoute}
+              className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
+              {firstName}
+            </Link>
+          )}
         </div>
       </div>
     </nav>

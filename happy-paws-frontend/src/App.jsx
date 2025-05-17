@@ -41,7 +41,6 @@ export default function App() {
         <Route path="login"  element={<LoginPage  />} />
         <Route path="signup" element={<SignUpPage />} />
       </Routes>
-
       <ToastContainer
         position="top-right"
         autoClose={3000}
