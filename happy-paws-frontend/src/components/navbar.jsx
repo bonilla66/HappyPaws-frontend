@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import logo from "../assets/icon1.png";
 
 export default function Navbar() {
-  // const user = null;
-  const user = { nombre: "Alejandro Ortega", rol: "Admin" };
+  const user = null;
+  // const user = { nombre: "Alejandro Ortega", rol: "Admin" };
 
   const firstName = user?.nombre.split(" ")[0];
 

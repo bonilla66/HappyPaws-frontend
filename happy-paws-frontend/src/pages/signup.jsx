@@ -96,24 +96,6 @@ export default function SignUpPage() {
                   type="password"
                   className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
               </div>
-              <div className="flex flex-col">
-                <label className="mb-1 text-grisito">Rol</label>
-                <div className="flex items-center space-x-8">
-                  {["colaborador", "adoptante"].map((opt) => (
-                    <label key={opt} className="inline-flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="rol"
-                        value={opt}
-                        checked={values.rol === opt}
-                        onChange={handleChange}
-                        className="h-4 w-4 accent-black cursor-pointer"
-                      />
-                      <span className="text-grisito capitalize">{opt}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
               <label className="flex items-center space-x-2 text-sm">
                 <input
                   name="terms"
