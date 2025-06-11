@@ -36,11 +36,37 @@ const onSubmit = async () => {
     await register(userData);
     toast.success("¡Cuenta creada exitosamente!");
   } catch (error) {
-    console.error("Register error", error);
-    if (error.response && error.response.data) {
-      console.error("Backend error data:", error.response.data);
+    console.error("Error en el registro:", error);
+
+    if (error.response) {
+      const data = error.response.data;
+
+      // 1. Errores de validación (por campo)
+      if (data.errors && typeof data.errors === "object") {
+        const errores = Object.values(data.errors);
+        errores.forEach((msg) => toast.error(msg));
+      }
+
+      // 2. Mensaje general
+      else if (typeof data.message === "string") {
+        toast.error(data.message);
+      }
+
+      // 3. Mensaje como array
+      else if (Array.isArray(data.message)) {
+        data.message.forEach((msg) => toast.error(msg));
+      }
+
+      // 4. Otro formato inesperado
+      else {
+        toast.error("Error inesperado: " + JSON.stringify(data));
+      }
+
+    } else if (error.request) {
+      toast.error("No se recibió respuesta del servidor.");
+    } else {
+      toast.error("Error al procesar la solicitud: " + error.message);
     }
-    toast.error("Error al crear la cuenta. Intenta nuevamente.");
   }
 };
 
