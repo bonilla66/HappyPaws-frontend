@@ -4,12 +4,28 @@ import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
 import BannerImage from "../assets/Group5.png";
 import { UseForm } from "../hooks/form";
+import { login, saveToken } from "../services/AuthService";
 
 export default function LoginPage() {
   const initialValues = { email: "", password: "" };
   const validate = (vals) =>
     !vals.email || !vals.password ? "Por favor completa todos los campos" : null;
-  const onSubmit = () => toast.success("¡Bienvenido de nuevo!");
+
+
+const onSubmit = async () => {
+  try {
+    const response = await login({
+      email: values.email,
+      password: values.password,
+    });
+    saveToken(response.data.token); 
+    toast.success("¡Bienvenido de nuevo!");
+
+  } catch (error) {
+    toast.error("Credenciales inválidas");
+    console.error("Login error", error);
+  }
+};
 
   const { values, handleChange, handleSubmit } = UseForm(
     initialValues,

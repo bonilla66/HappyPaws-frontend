@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
 import BannerImage from "../assets/Group5.png";
 import { UseForm } from "../hooks/form";
+ import { register } from "../services/AuthService"; 
 
 export default function SignUpPage() {
   const initialValues = {
@@ -21,7 +22,27 @@ export default function SignUpPage() {
     if (!vals.terms) return "Debes aceptar términos y condiciones";
     return null;
   };
-  const onSubmit = () => toast.success("¡Cuenta creada exitosamente!");
+
+const onSubmit = async () => {
+  try {
+    const { terms, rol, nombre, telefono, ...rest } = values;
+    const userData = {
+      name: nombre,
+      dui: values.dui,
+      phone: telefono,
+      email: values.email,
+      password: values.password,
+    };
+    await register(userData);
+    toast.success("¡Cuenta creada exitosamente!");
+  } catch (error) {
+    console.error("Register error", error);
+    if (error.response && error.response.data) {
+      console.error("Backend error data:", error.response.data);
+    }
+    toast.error("Error al crear la cuenta. Intenta nuevamente.");
+  }
+};
 
   const { values, handleChange, handleSubmit } = UseForm(
     initialValues,
@@ -95,6 +116,12 @@ export default function SignUpPage() {
                   onChange={handleChange}
                   type="password"
                   className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-grisito">Rol</label>
+                <div className="flex items-center space-x-8">
+                  
+                </div>
               </div>
               <label className="flex items-center space-x-2 text-sm">
                 <input
