@@ -21,7 +21,9 @@ export default function AddPetForm() {
     desparasitado: false,
     vacunado: false,
     llegada: "",
+    peso: ""
   });
+  
   const [preview, setPreview] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("success");

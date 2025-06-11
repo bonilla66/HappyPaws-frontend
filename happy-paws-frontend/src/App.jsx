@@ -18,6 +18,7 @@ import AddPetForm            from "./pages/addpetform.jsx";
 import UserSettingPage       from "./pages/userssettingpage.jsx";
 import SolicitudSettingPage  from "./pages/solicitudsettingpage.jsx";
 import PetSettingPage        from "./pages/petsettingpage.jsx";
+import ShelterAttribute from "./pages/shelterattributepage.jsx";
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="usersetting"       element={<UserSettingPage       />} />
           <Route path="solisetting"      element={<SolicitudSettingPage  />} />
           <Route path="petsetting"        element={<PetSettingPage        />} />
+          <Route path="dashboard"         element={<ShelterAttribute/>}/>
         </Route>
         <Route path="login"  element={<LoginPage  />} />
         <Route path="signup" element={<SignUpPage />} />
