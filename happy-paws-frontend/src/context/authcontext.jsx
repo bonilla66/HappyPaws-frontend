@@ -1,14 +1,50 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { login as loginService, logout as logoutService } from "../services/AuthService";
+import api from "../services/api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+
+  const [isAuthenticated,setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const login = (userData) => setUser(userData);
-  const logout = () => setUser(null);
+  const [loading, setLoading] = useState(true);
+
+  const login =  async (credentials) => {
+  await loginService(credentials);
+  const res = await api.get("/auth/me");
+  setUser(res.data); 
+  setIsAuthenticated(true);
+  }; 
+
+  const logout = async() => {
+    await logoutService();
+    setUser(null);
+    setIsAuthenticated(false);
+  }
+
+  const checkSession = async () => {
+  try {
+    await api.get("/auth/refresh");
+    const res = await api.get("/auth/me");
+    setUser(res.data);
+    setIsAuthenticated(true);
+  } catch (err) {
+    console.error("Error al verificar sesión:", err);
+    setIsAuthenticated(false);
+    setUser(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+   useEffect(() => {
+    checkSession();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, loading, user }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,12 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
 import BannerImage from "../assets/Group5.png";
 import { UseForm } from "../hooks/form";
-import { login, saveToken } from "../services/AuthService";
+import { login as loginApi } from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+
   const initialValues = { email: "", password: "" };
   const validate = (vals) =>
     !vals.email || !vals.password ? "Por favor completa todos los campos" : null;
@@ -14,12 +20,15 @@ export default function LoginPage() {
 
 const onSubmit = async () => {
   try {
-    const response = await login({
+    await loginApi({
       email: values.email,
       password: values.password,
     });
-    saveToken(response.data.token); 
+
+    
+    login({ email: values.email }); 
     toast.success("¡Bienvenido de nuevo!");
+    navigate("/");
 
   } catch (error) {
     toast.error("Credenciales inválidas");

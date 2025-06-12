@@ -4,18 +4,25 @@ import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
 import BannerImage from "../assets/Group5.png";
 import { UseForm } from "../hooks/form";
- import { register } from "../services/AuthService"; 
+import { register } from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 export default function SignUpPage() {
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const initialValues = {
     nombre: "",
     dui: "",
     telefono: "",
     email: "",
     password: "",
-    rol: "colaborador",
     terms: false,
   };
+
   const validate = (vals) => {
     if (!vals.nombre || !vals.dui || !vals.telefono || !vals.email || !vals.password)
       return "Por favor completa todos los campos";
@@ -23,52 +30,51 @@ export default function SignUpPage() {
     return null;
   };
 
-const onSubmit = async () => {
-  try {
-    const { terms, rol, nombre, telefono, ...rest } = values;
-    const userData = {
-      name: nombre,
-      dui: values.dui,
-      phone: telefono,
-      email: values.email,
-      password: values.password,
-    };
-    await register(userData);
-    toast.success("¡Cuenta creada exitosamente!");
-  } catch (error) {
-    console.error("Error en el registro:", error);
+  const onSubmit = async () => {
+    try {
+      const userData = {
+        name: values.nombre,
+        dui: values.dui,
+        phone: values.telefono,
+        email: values.email,
+        password: values.password,
+      };
 
-    if (error.response) {
-      const data = error.response.data;
+      await register(userData);
+      toast.success("¡Cuenta creada exitosamente!");
 
-      // 1. Errores de validación (por campo)
-      if (data.errors && typeof data.errors === "object") {
-        const errores = Object.values(data.errors);
-        errores.forEach((msg) => toast.error(msg));
+      await login({ email: userData.email, password: userData.password });
+      navigate("/");
+
+    } catch (error) {
+      console.error("Error en el registro:", error);
+
+      if (error.response) {
+        const data = error.response.data;
+
+        if (data.errors && typeof data.errors === "object") {
+          const errores = Object.values(data.errors);
+          errores.forEach((msg) => toast.error(msg));
+        }
+
+        else if (typeof data.message === "string") {
+          toast.error(data.message);
+        }
+
+        else if (Array.isArray(data.message)) {
+          data.message.forEach((msg) => toast.error(msg));
+        }
+
+        else {
+          toast.error("Error inesperado: " + JSON.stringify(data));
+        }
+      } else if (error.request) {
+        toast.error("No se recibió respuesta del servidor.");
+      } else {
+        toast.error("Error al procesar la solicitud: " + error.message);
       }
-
-      // 2. Mensaje general
-      else if (typeof data.message === "string") {
-        toast.error(data.message);
-      }
-
-      // 3. Mensaje como array
-      else if (Array.isArray(data.message)) {
-        data.message.forEach((msg) => toast.error(msg));
-      }
-
-      // 4. Otro formato inesperado
-      else {
-        toast.error("Error inesperado: " + JSON.stringify(data));
-      }
-
-    } else if (error.request) {
-      toast.error("No se recibió respuesta del servidor.");
-    } else {
-      toast.error("Error al procesar la solicitud: " + error.message);
     }
-  }
-};
+  };
 
   const { values, handleChange, handleSubmit } = UseForm(
     initialValues,
@@ -86,7 +92,8 @@ const onSubmit = async () => {
             <img
               src={BannerImage}
               alt="Banner mascotas"
-              className="w-full h-full object-cover"/>
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="md:w-1/2 p-12 flex flex-col justify-center space-y-6">
             <h2 className="text-4xl font-bold text-azulito text-center">
@@ -103,7 +110,8 @@ const onSubmit = async () => {
                   value={values.nombre}
                   onChange={handleChange}
                   type="text"
-                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
+                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
@@ -113,7 +121,8 @@ const onSubmit = async () => {
                     value={values.dui}
                     onChange={handleChange}
                     type="text"
-                    className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
+                    className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+                  />
                 </div>
                 <div className="flex flex-col">
                   <label className="mb-1 text-grisito">Teléfono</label>
@@ -122,7 +131,8 @@ const onSubmit = async () => {
                     value={values.telefono}
                     onChange={handleChange}
                     type="text"
-                    className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
+                    className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+                  />
                 </div>
               </div>
               <div className="flex flex-col">
@@ -132,7 +142,8 @@ const onSubmit = async () => {
                   value={values.email}
                   onChange={handleChange}
                   type="email"
-                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
+                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+                />
               </div>
               <div className="flex flex-col">
                 <label className="mb-1 text-grisito">Contraseña</label>
@@ -141,13 +152,8 @@ const onSubmit = async () => {
                   value={values.password}
                   onChange={handleChange}
                   type="password"
-                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"/>
-              </div>
-              <div className="flex flex-col">
-                <label className="mb-1 text-grisito">Rol</label>
-                <div className="flex items-center space-x-8">
-                  
-                </div>
+                  className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+                />
               </div>
               <label className="flex items-center space-x-2 text-sm">
                 <input
@@ -155,12 +161,14 @@ const onSubmit = async () => {
                   type="checkbox"
                   checked={values.terms}
                   onChange={handleChange}
-                  className="h-4 w-4 accent-black cursor-pointer"/>
+                  className="h-4 w-4 accent-black cursor-pointer"
+                />
                 <span className="text-grisito">Acepto términos y condiciones</span>
               </label>
               <button
                 type="submit"
-                className="w-full py-4 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition">
+                className="w-full py-4 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
+              >
                 Crear cuenta
               </button>
             </form>

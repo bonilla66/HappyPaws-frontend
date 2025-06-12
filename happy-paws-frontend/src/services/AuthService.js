@@ -1,21 +1,20 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/auth";
+const AUTH_URL = "/auth";
 
 export const login = async (credentials) => {
-  return await axios.post(`${API_URL}/login`, credentials);
+   await api.post(`${AUTH_URL}/login`, credentials);
 };
-
 
 export const register = async (userData) => {
   try {
-      const response = await axios.post('/api/auth/register', userData);
-      return response.data;
+    const response = await api.post(`${AUTH_URL}/register`, userData);
+    return response.data;
 
   } catch (error) {
     if (error.response) {
       const { status, data } = error.response;
-      
+
       if (status === 400) {
         if (data.errors) {
           throw {
@@ -38,15 +37,10 @@ export const register = async (userData) => {
       message: 'Network error. Please check your connection.'
     };
   }
-}
-export const saveToken = (token) => {
-  localStorage.setItem("token", token);
 };
 
-export const getToken = () => {
-  return localStorage.getItem("token");
+
+export const logout = async () => {
+  return await api.post(`${AUTH_URL}/logout`);
 };
 
-export const logout = () => {
-  localStorage.removeItem("token");
-};

@@ -7,11 +7,11 @@ export default function Footer() {
   return (
     <footer className="relative bg-cover bg-center text-azulito flex items-center justify-center"style={{ backgroundImage: `url(${fondito})` }}>
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between py-2 px-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 relative -left-35">
           <img src={logo} alt="HappyPaws logo" className="w-8 h-8" />
           <span className="text-azulito font-semibold text-lg">HappyPaws</span>
         </div>
-        <div className="mt-4 md:mt-0 text-lg">
+        <div className="mt-4 md:mt-0 text-lg relative -left-5">
           <ul className="flex space-x-6 text-azulito">
             <li>
               <a href="/aboutus" className="hover:underline">
@@ -25,7 +25,7 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-        <div className="mt-4 md:mt-0 flex space-x-4 text-azulito">
+        <div className="mt-4 md:mt-0 flex space-x-4 text-azulito relative left-35">
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-azulito">
             <Instagram size={20} />
           </a>
