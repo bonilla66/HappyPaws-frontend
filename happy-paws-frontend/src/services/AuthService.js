@@ -9,8 +9,9 @@ export const login = async (credentials) => {
 
 export const register = async (userData) => {
   try {
-    const response = await axios.post('/api/auth/register', userData);
-    return response.data;
+      const response = await axios.post('/api/auth/register', userData);
+      return response.data;
+
   } catch (error) {
     if (error.response) {
       const { status, data } = error.response;
