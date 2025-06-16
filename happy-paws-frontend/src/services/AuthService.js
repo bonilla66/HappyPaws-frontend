@@ -4,6 +4,8 @@ const AUTH_URL = "/auth";
 
 export const login = async (credentials) => {
    await api.post(`${AUTH_URL}/login`, credentials);
+   const response = await api.get(`${AUTH_URL}/me`);
+  return response.data;
 };
 
 export const register = async (userData) => {
@@ -38,6 +40,7 @@ export const register = async (userData) => {
     };
   }
 };
+
 
 
 export const logout = async () => {

@@ -4,15 +4,18 @@ import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard, Eye } from "lucide-react";
 
 export default function ColaboradorPage() {
-  const navigate = useNavigate();
-  const [editing, setEditing] = useState(false);
-  const [formValues, setFormValues] = useState({
-    nombre: "Alejandro Ortega",
-    rol: "Colaborador",
-    correo: "colaborador@happypaws.com",
-    telefono: "77778888",
-    dui: "12345678-9"
-  });
+   const navigate = useNavigate();
+    const [editing, setEditing] = useState(false);
+  
+    const { user, logout } = useAuth();
+  
+    const [formValues, setFormValues] = useState({
+      nombre: user?.name || "",
+      rol: user?.rol || "",
+      correo: user?.email || "",
+      telefono: user?.phone || "",
+      dui: user?.dui || "",
+    });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -114,16 +117,7 @@ export default function ColaboradorPage() {
               <IdCard size={20} className="text-grisito" />
               <span className="text-grisito text-sm">DUI:</span>
             </div>
-            {editing ? (
-              <input
-                type="text"
-                name="dui"
-                value={formValues.dui}
-                onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"/>
-            ) : (
               <p className="text-sm text-negrito">{formValues.dui}</p>
-            )}
           </div>
         </div>
         {editing && (

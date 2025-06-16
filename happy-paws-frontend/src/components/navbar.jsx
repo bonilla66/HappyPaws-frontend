@@ -4,16 +4,17 @@ import logo from "../assets/icon1.png";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   //const user = { nombre: "Alejandro Ortega", rol: "Admin" };
+  if (loading) return null;
   const firstName = user?.name?.split(" ")[0];
 
-  const settingsRoute =
-    user?.rol === "Admin"
-      ? "/adminpage"
-      : user?.rol === "Colaborador"
-      ? "/colaboradorpage"
-      : "/profilepage";
+ const settingsRoute =
+  user?.rol === "ADMIN"
+    ? "/adminpage"
+    : user?.rol === "COLABORADOR"
+    ? "/colaboradorpage"
+    : "/profilepage";
 
   return (
     <nav className="bg-amarillito relative">
