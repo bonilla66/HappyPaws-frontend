@@ -42,9 +42,9 @@ export default function App() {
           <Route path="adminpage"         element={<AdminPage             />} />
           <Route path="colaboradorpage"   element={<ColaboradorPage       />} />
           <Route path="addpetform"        element={<AddPetForm            />} />
-          <Route path="usersetting"       element={<UserSettingPage       />} />
-          <Route path="solisetting"      element={<SolicitudSettingPage  />} />
-          <Route path="petsetting"        element={<PetSettingPage        />} />
+          <Route path="usersetting/:id"       element={<UserSettingPage       />} />
+          <Route path="solisetting/:id"      element={<SolicitudSettingPage  />} />
+          <Route path="petsetting/:id"        element={<PetSettingPage        />} />
           <Route path="dashboard"         element={<ShelterAttribute/>}/>
         </Route>
         <Route path="login"  element={<LoginPage  />} />
