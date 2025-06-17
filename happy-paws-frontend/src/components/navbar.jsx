@@ -4,12 +4,10 @@ import logo from "../assets/icon1.png";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { isAuthenticated, user, loading } = useAuth();
-  //const user = { nombre: "Alejandro Ortega", rol: "Admin" };
-  if (loading) return null;
-  const firstName = user?.name?.split(" ")[0];
+  const { user, loading } = useAuth();
+if (loading) return null;
 
- const settingsRoute =
+const settingsRoute =
   user?.rol === "ADMIN"
     ? "/adminpage"
     : user?.rol === "COLABORADOR"
@@ -43,13 +41,17 @@ export default function Navbar() {
           </li>
         </ul>
         <div className="relative left-75 pr-4">
-           {!isAuthenticated ? (
-            <Link to="/login" className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
+          {!user ? (
+            <Link
+              to="/login"
+              className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
               Iniciar sesión
             </Link>
           ) : (
-            <Link to={settingsRoute} className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
-              {firstName}
+            <Link
+              to={settingsRoute}
+              className="text-lg px-4 py-1.5 border border-azulito text-azulito font-medium rounded-full hover:bg-blue-300 hover:text-white transition">
+              {user.name?.split(" ")[0]}
             </Link>
           )}
         </div>

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { updateUserProfile } from "../services/UserService";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -18,18 +19,58 @@ export default function ProfilePage() {
     dui: user?.dui || "",
   });
 
+  useEffect(() => {
+    if (user) {
+      setFormValues({
+        nombre: user.name || "",
+        rol: user.rol || "",
+        correo: user.email || "",
+        telefono: user.phone || "",
+        dui: user.dui || "",
+      });
+    }
+  }, [user]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((v) => ({ ...v, [name]: value }));
   };
 
-  const handleSave = () => {
-    const { nombre, correo, telefono, dui } = formValues;
-    if (!nombre || !correo || !telefono || !dui) {
+  const handleSave = async () => {
+    const { nombre, correo, telefono } = formValues;
+
+    if (!nombre || !correo || !telefono) {
       toast.error("Por favor, complete todos los campos");
-    } else {
-      toast.success("Cambios guardados");
+      return;
+    }
+
+    try {
+      const updatedData = {
+        name: nombre,
+        email: correo,
+        phone: telefono,
+        rol: formValues.rol,
+      };
+
+      const updatedUser = await updateUserProfile(user.id, updatedData);
+
+      setFormValues({
+        nombre: updatedUser.name,
+        correo: updatedUser.email,
+        telefono: updatedUser.phone,
+        dui: updatedUser.dui,
+        rol: updatedUser.rol,
+      });
+
+      toast.success("Perfil actualizado con éxito");
       setEditing(false);
+    } catch (error) {
+      if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Error al actualizar perfil");
+        console.error(error);
+      }
     }
   };
 
@@ -56,7 +97,8 @@ export default function ProfilePage() {
         <div className="w-2/5 relative border-r border-grisito pr-6">
           <button
             onClick={() => setEditing((e) => !e)}
-            className="absolute top-4 right-4 text-negrito hover:text-grisito cursor-pointer">
+            className="absolute top-4 right-4 text-negrito hover:text-grisito cursor-pointer"
+          >
             <MoreHorizontal size={24} />
           </button>
           <div className="flex items-center gap-4 mb-4 mt-6">
@@ -68,7 +110,8 @@ export default function ProfilePage() {
                   name="nombre"
                   value={formValues.nombre}
                   onChange={handleChange}
-                  className="w-full border-b border-grisito focus:outline-none"/>
+                  className="w-full border-b border-grisito focus:outline-none"
+                />
               ) : (
                 <h2 className="text-2xl font-semibold text-negrito mb-1">
                   {formValues.nombre}
@@ -93,7 +136,8 @@ export default function ProfilePage() {
                   name="correo"
                   value={formValues.correo}
                   onChange={handleChange}
-                  className=" w-full border-b border-grisito focus:outline-none"/>
+                  className=" w-full border-b border-grisito focus:outline-none"
+                />
               ) : (
                 <p className="text-xl text-negrito">{formValues.correo}</p>
               )}
@@ -109,7 +153,8 @@ export default function ProfilePage() {
                   name="telefono"
                   value={formValues.telefono}
                   onChange={handleChange}
-                  className="w-full border-b border-grisito focus:outline-none"/>
+                  className="w-full border-b border-grisito focus:outline-none"
+                />
               ) : (
                 <p className="text-negrito text-xl">{formValues.telefono}</p>
               )}
@@ -119,22 +164,49 @@ export default function ProfilePage() {
                 <IdCard size={30} className="text-grisito" />
                 <span className="text-grisito text-xl">DUI:</span>
               </div>
-              <p className="text-xl text-negrito opacity-70">{formValues.dui}</p>
+              <p className="text-xl text-negrito opacity-70">
+                {formValues.dui}
+              </p>
             </div>
           </div>
           {editing && (
-            <button
-              onClick={handleSave}
-              className="bg-moradito text-negrito rounded-full px-4 py-1 text-sm hover:bg-purple-300 transition mr-4">
-              Guardar cambios
-            </button>
+            <>
+              <button
+                onClick={handleSave}
+                className="bg-moradito text-negrito rounded-full px-4 py-1 text-sm hover:bg-purple-300 transition mr-4"
+              >
+                Guardar cambios
+              </button>
+              <button
+                onClick={() => {
+                  setFormValues({
+                    nombre: user.name || "",
+                    correo: user.email || "",
+                    telefono: user.phone || "",
+                    dui: user.dui || "",
+                    rol: user.rol || "",
+                  });
+                  setEditing(false);
+                }}
+                className="border border-grisito text-negrito rounded-full px-4 py-1 text-sm hover:bg-red-200 transition cursor-pointer"
+              >
+                Cancelar
+              </button>
+            </>
           )}
           <button
             onClick={() => {
-              logout();
-              navigate("/");
+              try {
+                logout();
+                navigate("/");
+                toast.info("Sesion cerrada");
+              } catch (err) {
+                toast.error("No se pudo cerrar sesión");
+                console.error(err);
+              }
             }}
-            className="cursor-pointer text-negrito border border-grisito rounded-full px-4 py-1 text-sm hover:bg-grisito transition ml-2">
+            className="cursor-pointer text-negrito border border-grisito rounded-full px-4 py-1 text-sm hover:bg-grisito transition ml-2"
+          >
             Cerrar sesión
           </button>
         </div>

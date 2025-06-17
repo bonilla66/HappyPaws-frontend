@@ -19,8 +19,15 @@ import UserSettingPage       from "./pages/userssettingpage.jsx";
 import SolicitudSettingPage  from "./pages/solicitudsettingpage.jsx";
 import PetSettingPage        from "./pages/petsettingpage.jsx";
 import ShelterAttribute from "./pages/shelterattributepage.jsx";
+import { useAuth } from "./context/AuthContext";
+
 
 export default function App() {
+    const { loading } = useAuth();
+
+    if (loading) {
+      return <div className="text-center mt-20 text-xl text-gray-600">Cargando sesión...</div>;
+    }
   return (
     <>
       <Routes>

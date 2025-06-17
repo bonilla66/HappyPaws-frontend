@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
 import BannerImage from "../assets/Group5.png";
 import { UseForm } from "../hooks/form";
-import { login as loginApi } from "../services/AuthService";
 import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
@@ -20,16 +19,21 @@ export default function LoginPage() {
 
 const onSubmit = async () => {
   try {
-    await loginApi({
+    const user = await login({
       email: values.email,
       password: values.password,
     });
 
-    
-    login({ email: values.email }); 
-    toast.success("¡Bienvenido de nuevo!");
-    navigate("/");
-
+    if (user) {
+      toast.success("¡Bienvenido de nuevo!");
+      const route =
+        user.rol === "ADMIN"
+          ? "/"
+          : user.rol === "COLABORADOR"
+          ? "/"
+          : "/";
+      navigate(route);
+    }
   } catch (error) {
     toast.error("Credenciales inválidas");
     console.error("Login error", error);

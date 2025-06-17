@@ -15,6 +15,7 @@ export function AuthProvider({ children }) {
   const res = await api.get("/auth/me");
   setUser(res.data); 
   setIsAuthenticated(true);
+  return res.data;
   }; 
 
   const logout = async() => {
@@ -29,6 +30,7 @@ export function AuthProvider({ children }) {
     const res = await api.get("/auth/me");
     setUser(res.data);
     setIsAuthenticated(true);
+    console.log(user);
   } catch (err) {
     console.error("Error al verificar sesión:", err);
     setIsAuthenticated(false);
