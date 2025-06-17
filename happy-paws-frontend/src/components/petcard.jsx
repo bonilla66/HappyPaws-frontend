@@ -16,9 +16,9 @@ export default function PetCard({ id, image, name, description }) {
         <h3 className="text-2xl font-bold text-negrito truncate">
           {name}
         </h3>
-        <p className="mt-2 text-sm text-negrito overflow-auto max-h-20">
-          {description}
-        </p>
+          <p className="text-sm text-negrito flex-1">
+           {description || 'Descripción no disponible'}
+          </p>
         <Link
           to={`/mascotas/${id}`}
           state={{ id, image, name, description }}
@@ -26,7 +26,7 @@ export default function PetCard({ id, image, name, description }) {
           <span>Ver más</span>
           <ArrowRight size={16} />
         </Link>
-        {/* No sirve este link aun xd info de cada mascota seria  "/info" */}
+        
       </div>
     </div>
   )

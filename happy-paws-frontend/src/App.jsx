@@ -34,7 +34,7 @@ export default function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index                    element={<Landing               />} />
           <Route path="mascotas"          element={<PetsPage              />} />
-          <Route path="info"              element={<InfoPagePet           />} />
+          <Route path="/mascotas/:id"              element={<InfoPagePet           />} />  
           <Route path="adoptform"         element={<AdoptionFormPage      />} />
           <Route path="aboutus"           element={<AboutUs               />} />
           <Route path="contactus"         element={<ContactPage           />} />

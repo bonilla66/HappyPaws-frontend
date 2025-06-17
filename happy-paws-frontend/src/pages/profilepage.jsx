@@ -52,7 +52,7 @@ export default function ProfilePage() {
         rol: formValues.rol,
       };
 
-      const updatedUser = await updateUserProfile(user.id, updatedData);
+      const updatedUser = await updateUserProfile(updatedData);
 
       setFormValues({
         nombre: updatedUser.name,

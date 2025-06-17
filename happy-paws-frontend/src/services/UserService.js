@@ -1,8 +1,10 @@
 import api from "./api"; 
 
-export const updateUserProfile = async (userId, data) => {
+
+
+export const updateUserProfile = async (data) => {
   try {
-    const response = await api.patch(`/user/${userId}`, data);
+    const response = await api.patch("/user", data);
     return response.data;
   } catch (error) {
     console.error("Error en UserService:", error.response?.data || error.message);
