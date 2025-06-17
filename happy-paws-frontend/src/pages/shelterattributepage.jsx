@@ -14,52 +14,68 @@ export default function ShelterAttribute() {
   const [attributes, setAttributes] = useState([]);
   const [species, setSpecies] = useState([]);
   const [breeds, setBreeds] = useState([]);
+
+
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const [sheltersRes, attributesRes, speciesRes, breedsRes] =
-          await Promise.all([
-            api.get("/shelters/all"),
-            api.get("/pet_attributes/all"),
-            api.get("/species/all"),
-            api.get("/breeds/all"),
-          ]);
+  const isArray = (data) =>
+    Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
 
-        if (Array.isArray(sheltersRes.data)) setShelters(sheltersRes.data);
-        else toast.error("Error al cargar refugios");
+  const fetchAll = async () => {
+    try {
+      const [sheltersRes, attributesRes, speciesRes, breedsRes] =
+        await Promise.all([
+          api.get("/shelters/all"),
+          api.get("/pet_attributes/all"),
+          api.get("/species/all"),
+          api.get("/breeds/all"),
+        ]);
 
-        if (Array.isArray(attributesRes.data))
-          setAttributes(attributesRes.data);
-        else toast.error("Error al cargar atributos");
+      // Logs para debug
+      console.log("Shelters:", sheltersRes.data);
+      console.log("Attributes:", attributesRes.data);
+      console.log("Species:", speciesRes.data);
+      console.log("Breeds:", breedsRes.data);
 
-        if (Array.isArray(speciesRes.data)) {
-          const normalizedSpecies = speciesRes.data.map((sp) => ({
-            id: sp.id_species,
-            name: sp.name,
-          }));
-          setSpecies(normalizedSpecies);
-        } else {
-          toast.error("Error al cargar especies");
-        }
+      const shelters = isArray(sheltersRes.data);
+      const attributes = isArray(attributesRes.data);
+      const speciesRaw = isArray(speciesRes.data);
+      const breedsRaw = isArray(breedsRes.data);
 
-        if (Array.isArray(breedsRes.data)) {
-          const normalizedBreeds = breedsRes.data.map((b) => ({
-            id: b.id_breed,
-            name: b.name,
-            speciesId: b.speciesId,
-          }));
-          setBreeds(normalizedBreeds);
-        } else {
-          toast.error("Error al cargar razas");
-        }
-      } catch (err) {
-        console.error("Error al cargar los datos del sistema", err);
-        toast.error("Error general al cargar los datos");
+      if (shelters.length) setShelters(shelters);
+      else toast.error("Error al cargar refugios");
+
+      if (attributes.length) setAttributes(attributes);
+      else toast.error("Error al cargar atributos");
+
+      if (speciesRaw.length) {
+        const normalizedSpecies = speciesRaw.map((sp) => ({
+          id: sp.id_species,
+          name: sp.name,
+        }));
+        setSpecies(normalizedSpecies);
+      } else {
+        toast.error("Error al cargar especies");
       }
-    };
 
-    fetchAll();
-  }, []);
+      if (breedsRaw.length) {
+        const normalizedBreeds = breedsRaw.map((b) => ({
+          id: b.id_breed,
+          name: b.name,
+          speciesId: b.speciesId,
+        }));
+        setBreeds(normalizedBreeds);
+      } else {
+        toast.error("Error al cargar razas");
+      }
+    } catch (err) {
+      console.error("Error al cargar los datos del sistema", err);
+      toast.error("Error general al cargar los datos");
+    }
+  };
+
+  fetchAll();
+}, []);
+
 
   const [showShelterModal, setShowShelterModal] = useState(false);
   const [showAttributeModal, setShowAttributeModal] = useState(false);

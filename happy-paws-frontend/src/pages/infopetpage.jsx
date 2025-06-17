@@ -1,6 +1,13 @@
 import React from "react";
 import Dogo from "../assets/dog1.png";
-import {PawPrint, Syringe, Bug, CheckCircle, ArrowLeft} from "lucide-react";
+import {
+  PawPrint,
+  Syringe,
+  Bug,
+  CheckCircle,
+  ArrowLeft,
+  SquareDashedBottomCode,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function InfoPagePet() {
@@ -21,11 +28,24 @@ export default function InfoPagePet() {
       dewormed: true,
       available: true,
     },
+    attributes: [
+      {
+        id: 1,
+        attributeName: "Color de ojos",
+        attributeValue: "Azules",
+      },
+      {
+        id: 2,
+        attributeName: "Particularidad",
+        attributeValue: "No tiene una pata",
+      },
+    ],
   };
+
   return (
     <div className="min-h-screen bg-amarillito p-6">
       <header className="flex items-center justify-between mb-2">
-         <Link to="/mascotas">
+        <Link to="/mascotas">
           <ArrowLeft size={24} className="text-negrito cursor-pointer" />
         </Link>
       </header>
@@ -38,7 +58,8 @@ export default function InfoPagePet() {
           <img
             src={pet.imageUrl}
             alt={pet.name}
-            className="w-full h-full object-cover"/>
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="flex-1 space-y-6">
           <h2 className="text-2xl font-light text-azulito">Sobre mí…</h2>
@@ -69,35 +90,60 @@ export default function InfoPagePet() {
       <div className="bg-anaranjadito p-8 rounded-2xl mb-6 mx-auto max-w-3xl">
         <div className="grid grid-cols-4 gap-x-6 justify-items-center">
           <div className="flex flex-col items-center space-y-0.5">
-            <PawPrint size={32}/>
+            <PawPrint size={32} />
             <span className="text-sm font-medium">Esterilizad@</span>
-            <span className="text-xs">{pet.status.sterilized?"Sí":"No"}</span>
+            <span className="text-xs">
+              {pet.status.sterilized ? "Sí" : "No"}
+            </span>
           </div>
           <div className="flex flex-col items-center space-y-0.5">
-            <Syringe size={32}/>
+            <Syringe size={32} />
             <span className="text-sm font-medium">Vacunad@</span>
-            <span className="text-xs">{pet.status.vaccinated?"Sí":"No"}</span>
+            <span className="text-xs">
+              {pet.status.vaccinated ? "Sí" : "No"}
+            </span>
           </div>
           <div className="flex flex-col items-center space-y-0.5">
-            <Bug size={32}/>
+            <Bug size={32} />
             <span className="text-sm font-medium">Desparasitad@</span>
-            <span className="text-xs">{pet.status.dewormed?"Sí":"No"}</span>
+            <span className="text-xs">{pet.status.dewormed ? "Sí" : "No"}</span>
           </div>
           <div className="flex flex-col items-center space-y-0.5">
-            <CheckCircle size={32}/>
+            <CheckCircle size={32} />
             <span className="text-sm font-medium">Disponible</span>
-            <span className="text-xs">{pet.status.available?"Sí":"No"}</span>
+            <span className="text-xs">
+              {pet.status.available ? "Sí" : "No"}
+            </span>
           </div>
         </div>
       </div>
+
+      {pet.attributes.length > 0 && (
+        <div className="bg-azulito p-4 rounded-xl mb-6 max-w-3xl mx-auto shadow-md">
+          <h3 className="text-xl font-semibold text-blanquito mb-3 flex items-center gap-2">
+            <SquareDashedBottomCode size={30} className="text-blanquito" />
+            Características especiales
+          </h3>
+          <ul className="list-disc list-inside text-blanquito text-sm pl-4">
+            {pet.attributes.map((attr) => (
+              <li key={attr.id}>
+                <strong>{attr.attributeName}:</strong> {attr.attributeValue}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="px-16 mb-12">
         <h2 className="font-bold text-azulito text-xl mb-2">Historia</h2>
         <p className="text-negrito text-l leading-relaxed">{pet.history}</p>
       </div>
       <div className="text-center">
         <button
-        onClick={() => navigate("/adoptform")} 
-        className="px-8 py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"> Adóptame → </button>
+          onClick={() => navigate("/adoptform")}
+          className="px-8 py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
+        >
+          Adóptame →
+        </button>
       </div>
     </div>
   );
