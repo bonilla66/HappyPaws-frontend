@@ -30,7 +30,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="text-center mt-20 text-xl text-gray-600 h-full w-full"
+      <div className="flex items-center justify-center text-xl text-gray-600 h-full w-full"
       style={{ backgroundImage: `url(${fondito})` }}>
         Cargando sesión...
       </div>

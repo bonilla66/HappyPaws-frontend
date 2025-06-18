@@ -56,11 +56,11 @@ export default function InfoPagePet() {
   }
 
   if (loading)
-    return <div className="text-center py-12">Cargando mascota...</div>;
+    return <div className="w-screen h-screen flex items-center justify-center bg-amarillito text-negrito text-xl">Cargando mascota...</div>;
   if (error)
-    return <div className="text-center py-12 text-red-500">{error}</div>;
+    return <div className="w-screen h-screen flex items-center justify-center bg-amarillito text-red text-xl">{error}</div>;
   if (!pet)
-    return <div className="text-center py-12">Mascota no encontrada</div>;
+    return <div className="w-screen h-screen flex items-center justify-center bg-amarillito text-negrito text-xl">Mascota no encontrada</div>;
 
   return (
     <div className="min-h-screen max-h-screen overflow-y-auto bg-amarillito p-4 sm:p-6">
