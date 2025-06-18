@@ -23,7 +23,7 @@ import RoleProtectedRoute from "./routes/RoleProtectedRoute.jsx";
 import Unauthorized from "./pages/unauthorized.jsx";
 import fondito from "./assets/bannerHoriz.jpg";
 import { useAuth } from "./context/AuthContext.jsx";
-
+import EditPetPage from "./pages/editpetpage.jsx";
 export default function App() {
 
   const { loading } = useAuth();
@@ -47,6 +47,7 @@ export default function App() {
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
           <Route path="profilepage" element={<ProfilePage />} />
+          <Route path="editpet" element={<EditPetPage/>} />
           <Route 
           path="adminpage" 
           element={

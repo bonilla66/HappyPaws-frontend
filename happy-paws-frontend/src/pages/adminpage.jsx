@@ -321,7 +321,8 @@ export default function AdminPage() {
                     </td>
                     <td className="px-4 py-2 text-left">
                       <Link
-                        to={`/petsetting/${p.id}`}
+                        to="/editpet"
+                        state={{ id: p.id }}
                         className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
                       >
                         <Eye size={16} />

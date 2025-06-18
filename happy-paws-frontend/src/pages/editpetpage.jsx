@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PopUpForm from "../components/popupform.jsx";
+import ConfirmDelete from "../components/confirmdelete.jsx";
 import useWizard from "../hooks/useWizard.js";
 import api from "../services/api.js";
+import { Trash2 } from "lucide-react";
+import fondito from "../assets/bannerHoriz.jpg";
+import { toast } from "react-toastify";
+import icon from "../assets/icon3.png";
+import { X } from 'lucide-react';
 
-export default function AddPetForm() {
+
+export default function EditPetPage() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+  const { id } = state || {};
+
   const { step, next, prev } = useWizard(4);
   const [form, setForm] = useState({
     photoURL: "",
@@ -29,17 +40,6 @@ export default function AddPetForm() {
     history: "",
   });
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState("success");
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((f) => ({
-      ...f,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
   const [species, setSpecies] = useState([]);
   const [breeds, setBreeds] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -47,8 +47,16 @@ export default function AddPetForm() {
   const [shelters, setShelters] = useState([]);
   const [_attributes, setAttributes] = useState([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("success");
+
+  const [confirmVisible, setConfirmVisible] = useState(false);
+
+  const inputStyle =
+    "mt-1 block w-full rounded-lg border border-grisito shadow-sm focus:outline-none focus:ring-2 focus:ring-moradito focus:border-transparent";
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       try {
         const [speciesRes, _sizesRes, gendersRes, sheltersRes, attributesRes] =
           await Promise.all([
@@ -60,63 +68,97 @@ export default function AddPetForm() {
           ]);
 
         setSpecies(speciesRes.data);
-        setSizes([
-          { label: "Pequeño", value: 1 },
-          { label: "Mediano", value: 2 },
-          { label: "Grande", value: 3 },
-        ]);
+        const sizeMap = {
+          PEQUEÑO: 1,
+          MEDIANO: 2,
+          GRANDE: 3,
+        };
 
+        const mappedSizes = _sizesRes.data.map((s) => ({
+          label: s.label,
+          value: sizeMap[s.value],
+        }));
+
+        setSizes(mappedSizes);
         setGenders(gendersRes.data);
         setShelters(sheltersRes.data);
         setAttributes(attributesRes.data);
-      } catch (error) {
-        console.error("Error cargando datos del formulario:", error);
+      } catch (err) {
+        console.error("Error cargando datos auxiliares:", err);
       }
     };
-    fetchData();
 
-    setForm((prevForm) => ({
-      ...prevForm,
-      entryDate: new Date().toISOString().split("T")[0],
-    }));
-  }, []);
+    const fetchPetData = async () => {
+      try {
+        const res = await api.get(`/pets/${id}`);
+        const pet = res.data;
+
+        console.log("Pet cargada:", pet); // 👈 esto ayuda a debuguear
+
+        setForm({
+          photoURL: pet.photoURL || "",
+          nombre: pet.name || "",
+          edad: pet.age?.toString() || "",
+          edadUnidad: pet.ageUnit || "",
+          raza: pet.breedId?.toString() || "",
+          sexo: pet.gender || "",
+          tamaño: pet.sizeId?.toString() || "",
+          tipo: pet.speciesId?.toString() || "",
+          descripcion: pet.description || "",
+          esterilizado: pet.sterilized || false,
+          desparasitado: pet.parasiteFree || false,
+          vacunado: pet.fullyVaccinated || false,
+          llegada: pet.history || "",
+          peso:
+            pet.weight !== undefined && pet.weight !== null
+              ? pet.weight.toString()
+              : "",
+          shelterId: pet.shelterId?.toString() || "",
+          petAttributeIds:
+            pet.attributes?.map((attr) => attr.id.toString()) || [],
+
+          entryDate: pet.entryDate?.slice(0, 10) || "",
+          reviewDate: pet.reviewDate?.slice(0, 10) || "",
+
+          history: pet.history || "",
+        });
+      } catch (err) {
+        console.error("Error al cargar mascota:", err);
+        navigate(-1);
+      }
+    };
+
+    setIsLoading(false);
+
+    if (id) {
+      fetchInitialData();
+      fetchPetData();
+    }
+  }, [id, navigate]);
 
   useEffect(() => {
     const fetchBreedsBySpecies = async () => {
-      if (!form.tipo) {
-        setBreeds([]);
-        return;
-      }
+      if (!form.tipo) return;
       try {
         const res = await api.get(`/breeds/byspecie/${form.tipo}`);
         setBreeds(res.data);
-      } catch (error) {
-        console.error("Error al cargar razas:", error);
+      } catch (err) {
+        console.error("Error cargando razas:", err);
       }
     };
     fetchBreedsBySpecies();
   }, [form.tipo]);
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((f) => ({
+      ...f,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !form.nombre ||
-      !form.edad ||
-      !form.edadUnidad ||
-      !form.sexo ||
-      !form.tamaño ||
-      !form.tipo ||
-      !form.descripcion ||
-      !form.llegada ||
-      !form.entryDate ||
-      !form.reviewDate ||
-      !form.shelterId
-    ) {
-      setModalType("error");
-      setShowModal(true);
-      return;
-    }
-
     const payload = {
       name: form.nombre,
       ageValue: parseInt(form.edad),
@@ -137,25 +179,34 @@ export default function AddPetForm() {
       breedId: form.raza ? parseInt(form.raza) : null,
       petAttributeIds: form.petAttributeIds.map((id) => parseInt(id)),
     };
+    console.log("Payload enviado:", payload);
 
     try {
-      await api.post("/pets/register", payload);
+      await api.patch(`/pets/${id}`, payload);
+      toast.success("Mascota actualizada correctamente");
       setModalType("success");
-    } catch (error) {
+    } catch (err) {
+      console.error(
+        "Error actualizando mascota:",
+        err.response?.data || err.message,
+        err
+      );
+      toast.error("Error al actualizar la mascota");
       setModalType("error");
-      console.log("Error en creación:", error.response?.data || error.message);
     }
-
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    if (modalType === "success") navigate(-1);
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/pets/${id}`);
+      toast.success("Mascota eliminada correctamente");
+      navigate(-1);
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      toast.error("Error al eliminar la mascota");
+    }
   };
-
-  const inputStyle =
-    "mt-1 block w-full rounded-lg border border-grisito shadow-sm focus:outline-none focus:ring-2 focus:ring-moradito focus:border-transparent";
 
   const renderStep = () => {
     switch (step) {
@@ -389,7 +440,6 @@ export default function AddPetForm() {
                 className={inputStyle}
               />
             </div>
-
             <div className="space-y-2">
               <div className="flex items-center gap-4">
                 <label className="text-sm text-negrito">Esterilizado</label>
@@ -415,7 +465,6 @@ export default function AddPetForm() {
                 />
               </div>
             </div>
-
             <div className="mt-6">
               <label className="block text-sm font-medium text-negrito mb-2">
                 Atributos especiales
@@ -457,7 +506,6 @@ export default function AddPetForm() {
             </div>
           </>
         );
-
       case 4:
         return (
           <div className="flex bg-rosadito rounded-[24px] shadow-xl w-full max-w-2xl mx-auto overflow-hidden mb-6">
@@ -468,7 +516,6 @@ export default function AddPetForm() {
                 className="w-full h-full object-cover rounded-2xl"
               />
             </div>
-
             <div className="p-6 flex flex-col items-start text-left flex-1 overflow-hidden">
               <h3 className="text-2xl font-bold text-negrito truncate">
                 {form.nombre || "Nombre pendiente"}
@@ -506,7 +553,6 @@ export default function AddPetForm() {
                   {form.desparasitado ? "✅ Sí" : "❌ No"}
                 </p>
               </div>
-
               <div className="mt-4 text-sm text-negrito">
                 <strong>Atributos seleccionados:</strong>
                 <ul className="mt-1 space-y-2">
@@ -546,62 +592,136 @@ export default function AddPetForm() {
   return (
     <div className="w-full bg-amarillito min-h-screen py-4">
       <h3 className="text-3xl font-semibold text-negrito ml-10 mb-4">
-        Formulario de la mascota
+        Editar mascota
       </h3>
-      <form
-        onSubmit={step === 4 ? handleSubmit : (e) => e.preventDefault()}
-        className="max-w-4xl mx-auto bg-blanquito shadow-xl rounded-2xl p-10 space-y-6"
-      >
-        {renderStep()}
-        <div className="flex justify-between">
-          {step > 1 && (
+      {isLoading ? (
+        <p
+          className="text-center mt-20 text-xl text-gray-600 h-full w-full"
+          style={{ backgroundImage: `url(${fondito})` }}
+        >
+          Caargando datos...
+        </p>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (step === 4) handleSubmit(e);
+          }}
+          className="max-w-4xl mx-auto bg-blanquito shadow-xl rounded-2xl p-10 space-y-6"
+        >
+          {renderStep()}
+          <div className="flex justify-between">
             <button
               type="button"
-              onClick={prev}
-              className="px-6 py-2 bg-grisito text-negrito rounded-full hover:bg-gray-400 cursor-pointer"
+              onClick={() => setConfirmVisible(true)}
+              className="p-2 rounded-full text-red-600 hover:bg-red-100"
+              title="Eliminar mascota"
             >
-              Atrás
+              <Trash2 className="w-6 h-6" />
             </button>
-          )}
-          {step < 3 && (
-            <button
-              type="button"
-              onClick={next}
-              className="px-6 py-2 bg-moradito text-negrito rounded-full hover:bg-purple-200 cursor-pointer"
-            >
-              Siguiente
-            </button>
-          )}
-          {step === 3 && (
-            <button
-              type="button"
-              onClick={next}
-              className="px-6 py-2 bg-moradito text-negrito rounded-full hover:bg-purple-200 cursor-pointer"
-            >
-              Visualizar mascota
-            </button>
-          )}
-          {step === 4 && (
-            <button
-              type="submit"
-              className="px-6 py-2 bg-azulito text-blanquito rounded-full hover:bg-sky-600 cursor-pointer"
-            >
-              Crear mascota
-            </button>
-          )}
-        </div>
-      </form>
+            <div className="space-x-4">
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="px-6 py-2 bg-grisito text-negrito rounded-full hover:bg-gray-400"
+                >
+                  Atrás
+                </button>
+              )}
+              {step < 3 && (
+                <button
+                  type="button"
+                  onClick={next}
+                  className="px-6 py-2 bg-moradito text-negrito rounded-full hover:bg-purple-200"
+                >
+                  Siguiente
+                </button>
+              )}
+              {step === 3 && (
+                <button
+                  type="button"
+                  onClick={next}
+                  className="px-6 py-2 bg-moradito text-negrito rounded-full hover:bg-purple-200"
+                >
+                  Visualizar
+                </button>
+              )}
+              {step === 4 && (
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-azulito text-blanquito rounded-full hover:bg-sky-600"
+                >
+                  Guardar cambios
+                </button>
+              )}
+            </div>
+          </div>
+        </form>
+      )}
       {showModal && (
         <PopUpForm
           type={modalType}
           message={
             modalType === "success"
-              ? "Mascota agregada con éxito"
-              : "Hubo un problema al agregar la mascota"
+              ? "Mascota actualizada con éxito"
+              : "Hubo un error al actualizar la mascota"
           }
-          onClose={closeModal}
+          onClose={() => {
+            setShowModal(false);
+            if (modalType === "success") {
+              navigate("/mascotas");
+            }
+          }}
         />
       )}
+
+      <ConfirmDeleteInline
+        visible={confirmVisible}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmVisible(false)}
+      />
     </div>
   );
+
+  function ConfirmDeleteInline({ visible, onConfirm, onCancel }) {
+    if (!visible) return null;
+
+    return (
+      <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex justify-center items-center z-50">
+        <div className="bg-anaranjadito rounded-xl shadow-2xl p-6 w-full max-w-sm text-center relative">
+          <button
+            onClick={onCancel}
+            className="absolute top-2 right-3 text-black text-xl"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <img
+            src={icon}
+            alt="Icono de huella"
+            className="w-12 h-12 mx-auto mb-4"
+          />
+          <p className="text-negrito text-base mb-6">
+            ¿Estás seguro que quieres eliminar esta mascota?
+          </p>
+
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={onConfirm}
+              className="bg-red-400 text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-red-400 transition"
+            >
+              Sí
+            </button>
+            <button
+              onClick={onCancel}
+              className="bg-grisito text-black rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-400 transition"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
