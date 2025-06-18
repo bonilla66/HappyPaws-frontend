@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { fetchPetById } from '../services/petService'; 
-import { ArrowLeft, PawPrint, Syringe, Bug, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchPetById } from "../services/petService";
+import { ArrowLeft, PawPrint, Syringe, Bug, CheckCircle } from "lucide-react";
 
 export default function InfoPagePet() {
   const { id } = useParams();
@@ -28,27 +28,39 @@ export default function InfoPagePet() {
   function normalizePetData(rawPet) {
     return {
       id: rawPet.id,
-      name: rawPet.name || 'Sin nombre',
-      species: rawPet.species?.name || rawPet.species || 'Desconocido',
-      breed: rawPet.breed?.name || rawPet.breed || 'Desconocido',
-      gender: rawPet.gender === 'HEMBRA' ? 'Femenino' :
-              rawPet.gender === 'MACHO' ? 'Masculino' : 'Desconocido',
-      size: rawPet.size?.name || rawPet.size || 'Desconocido',
-      age: rawPet.age ? `${Math.floor(rawPet.age / 12)} años y ${rawPet.age % 12} meses` : 'Edad no especificada',
+      name: rawPet.name || "Sin nombre",
+      species: rawPet.species?.name || rawPet.species || "Desconocido",
+      breed: rawPet.breed?.name || rawPet.breed || "Desconocido",
+      gender:
+        rawPet.gender === "HEMBRA"
+          ? "Femenino"
+          : rawPet.gender === "MACHO"
+          ? "Masculino"
+          : "Desconocido",
+      size: rawPet.size?.name || rawPet.size || "Desconocido",
+      age: rawPet.age
+        ? `${Math.floor(rawPet.age / 12)} años y ${rawPet.age % 12} meses`
+        : "Edad no especificada",
       sterilized: rawPet.sterilized || false,
       vaccinated: rawPet.fullyVaccinated || false,
       dewormed: rawPet.parasiteFree || false,
-      status: rawPet.status === 'DISPONIBLE',
-      photoUrl: rawPet.photoUrl || '/default-pet.jpg',
-      description: rawPet.description || 'Sin descripción disponible',
-      history: rawPet.history || 'Sin historia disponible',
-      entryDate: rawPet.entry_Date ? new Date(rawPet.entry_Date).toLocaleDateString() : 'Fecha desconocida'
+      status: rawPet.status === "DISPONIBLE",
+      photoUrl: rawPet.photoUrl || "/default-pet.jpg",
+      description: rawPet.description || "Sin descripción disponible",
+      history: rawPet.history || "Sin historia disponible",
+      entryDate: rawPet.entry_Date
+        ? new Date(rawPet.entry_Date).toLocaleDateString()
+        : "Fecha desconocida",
+      attributes: rawPet.attributes || [],
     };
   }
 
-  if (loading) return <div className="text-center py-12">Cargando mascota...</div>;
-  if (error) return <div className="text-center py-12 text-red-500">{error}</div>;
-  if (!pet) return <div className="text-center py-12">Mascota no encontrada</div>;
+  if (loading)
+    return <div className="text-center py-12">Cargando mascota...</div>;
+  if (error)
+    return <div className="text-center py-12 text-red-500">{error}</div>;
+  if (!pet)
+    return <div className="text-center py-12">Mascota no encontrada</div>;
 
   return (
     <div className="min-h-screen max-h-screen overflow-y-auto bg-amarillito p-4 sm:p-6">
@@ -63,7 +75,9 @@ export default function InfoPagePet() {
       </header>
 
       <div className="flex justify-center items-baseline gap-2 mb-6 flex-wrap">
-        <h1 className="text-3xl sm:text-4xl font-bold text-azulito">{pet.name}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-azulito">
+          {pet.name}
+        </h1>
         <span className="text-lg text-azulito">({pet.species})</span>
       </div>
 
@@ -93,10 +107,26 @@ export default function InfoPagePet() {
 
       <div className="bg-anaranjadito p-6 rounded-2xl mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4 justify-items-center">
-          <MedicalItem icon={<PawPrint size={32} />} label="Esterilizad@" value={pet.sterilized} />
-          <MedicalItem icon={<Syringe size={32} />} label="Vacunad@" value={pet.vaccinated} />
-          <MedicalItem icon={<Bug size={32} />} label="Desparasitad@" value={pet.dewormed} />
-          <MedicalItem icon={<CheckCircle size={32} />} label="Disponible" value={pet.status} />
+          <MedicalItem
+            icon={<PawPrint size={32} />}
+            label="Esterilizad@"
+            value={pet.sterilized}
+          />
+          <MedicalItem
+            icon={<Syringe size={32} />}
+            label="Vacunad@"
+            value={pet.vaccinated}
+          />
+          <MedicalItem
+            icon={<Bug size={32} />}
+            label="Desparasitad@"
+            value={pet.dewormed}
+          />
+          <MedicalItem
+            icon={<CheckCircle size={32} />}
+            label="Disponible"
+            value={pet.status}
+          />
         </div>
       </div>
 
@@ -105,9 +135,29 @@ export default function InfoPagePet() {
         <p className="text-negrito text-base leading-relaxed">{pet.history}</p>
       </div>
 
+      {pet.attributes.length > 0 && (
+        <div className="bg-azulito text-blanquito p-4 rounded-2xl mb-10 max-w-md mx-auto shadow-lg">
+          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            <PawPrint size={20} className="text-white" />
+            Atributos especiales
+          </h2>
+          <ul className="max-h-24 overflow-y-auto pr-2 space-y-2 text-sm">
+            {pet.attributes.map((attr) => (
+              <li
+                key={attr.id}
+                className="bg-white/10 px-3 py-1 rounded-md shadow-sm backdrop-blur-sm"
+              >
+                <p className="font-medium">{attr.attributeName}</p>
+                <p className="text-white/90 text-xs">{attr.attributeValue}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="h-20 text-center mt-10">
         <button
-          onClick={() => navigate('/adoptform')}
+          onClick={() => navigate("/adoptform")}
           className="px-8 py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
         >
           Adóptame →
@@ -128,6 +178,6 @@ const MedicalItem = ({ icon, label, value }) => (
   <div className="flex flex-col items-center space-y-1">
     {icon}
     <span className="text-sm font-medium">{label}</span>
-    <span className="text-xs">{value ? 'Sí' : 'No'}</span>
+    <span className="text-xs">{value ? "Sí" : "No"}</span>
   </div>
 );
