@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { fetchPetById } from '../services/petService'; 
 import { ArrowLeft, PawPrint, Syringe, Bug, CheckCircle } from 'lucide-react';
-import { fetchPetById } from '../services/petService';
 
 export default function InfoPagePet() {
   const { id } = useParams();
@@ -9,28 +9,21 @@ export default function InfoPagePet() {
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    const loadPet = async () => {
-      setLoading(true);
+    const fetchData = async () => {
       try {
-        const rawPet = await fetchPetById(id, token);
+        const rawPet = await fetchPetById(id);
         setPet(normalizePetData(rawPet));
       } catch (err) {
-        setError(err.message || 'Error al cargar la mascota');
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    loadPet();
-  }, [id, token, navigate]);
+    fetchData();
+  }, [id]);
 
   function normalizePetData(rawPet) {
     return {
@@ -38,16 +31,10 @@ export default function InfoPagePet() {
       name: rawPet.name || 'Sin nombre',
       species: rawPet.species?.name || rawPet.species || 'Desconocido',
       breed: rawPet.breed?.name || rawPet.breed || 'Desconocido',
-      gender:
-        rawPet.gender === 'HEMBRA'
-          ? 'Femenino'
-          : rawPet.gender === 'MACHO'
-          ? 'Masculino'
-          : 'Desconocido',
+      gender: rawPet.gender === 'HEMBRA' ? 'Femenino' :
+              rawPet.gender === 'MACHO' ? 'Masculino' : 'Desconocido',
       size: rawPet.size?.name || rawPet.size || 'Desconocido',
-      age: rawPet.age
-        ? `${Math.floor(rawPet.age / 12)} años y ${rawPet.age % 12} meses`
-        : 'Edad no especificada',
+      age: rawPet.age ? `${Math.floor(rawPet.age / 12)} años y ${rawPet.age % 12} meses` : 'Edad no especificada',
       sterilized: rawPet.sterilized || false,
       vaccinated: rawPet.fullyVaccinated || false,
       dewormed: rawPet.parasiteFree || false,
@@ -55,17 +42,13 @@ export default function InfoPagePet() {
       photoUrl: rawPet.photoUrl || '/default-pet.jpg',
       description: rawPet.description || 'Sin descripción disponible',
       history: rawPet.history || 'Sin historia disponible',
-      entryDate: rawPet.entry_Date
-        ? new Date(rawPet.entry_Date).toLocaleDateString()
-        : 'Fecha desconocida',
+      entryDate: rawPet.entry_Date ? new Date(rawPet.entry_Date).toLocaleDateString() : 'Fecha desconocida'
     };
   }
 
   if (loading) return <div className="text-center py-12">Cargando mascota...</div>;
   if (error) return <div className="text-center py-12 text-red-500">{error}</div>;
   if (!pet) return <div className="text-center py-12">Mascota no encontrada</div>;
-
-
 
   return (
     <div className="min-h-screen max-h-screen overflow-y-auto bg-amarillito p-4 sm:p-6">
@@ -78,10 +61,12 @@ export default function InfoPagePet() {
           <span>Volver</span>
         </button>
       </header>
+
       <div className="flex justify-center items-baseline gap-2 mb-6 flex-wrap">
         <h1 className="text-3xl sm:text-4xl font-bold text-azulito">{pet.name}</h1>
         <span className="text-lg text-azulito">({pet.species})</span>
       </div>
+
       <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10 mb-6">
         <div className="w-full md:w-64 aspect-square bg-grisito rounded-2xl overflow-hidden mx-auto md:mx-0">
           <img
@@ -105,6 +90,7 @@ export default function InfoPagePet() {
           </div>
         </div>
       </div>
+
       <div className="bg-anaranjadito p-6 rounded-2xl mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4 justify-items-center">
           <MedicalItem icon={<PawPrint size={32} />} label="Esterilizad@" value={pet.sterilized} />
@@ -113,10 +99,12 @@ export default function InfoPagePet() {
           <MedicalItem icon={<CheckCircle size={32} />} label="Disponible" value={pet.status} />
         </div>
       </div>
+
       <div className="mb-12">
         <h2 className="font-bold text-azulito text-xl mb-2">Historia</h2>
         <p className="text-negrito text-base leading-relaxed">{pet.history}</p>
       </div>
+
       <div className="h-20 text-center mt-10">
         <button
           onClick={() => navigate('/adoptform')}
@@ -128,6 +116,7 @@ export default function InfoPagePet() {
     </div>
   );
 }
+
 const InfoItem = ({ title, value }) => (
   <div>
     <h3 className="font-bold text-azulito text-lg">{title}</h3>

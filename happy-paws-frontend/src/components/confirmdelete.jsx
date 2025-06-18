@@ -13,7 +13,7 @@ export default function ConfirmDelete({ visible, onConfirm, onCancel, message })
             Cancelar
           </button>
           <button
-            className="cursor-pointer px-4 py-2 bg-red-500 text-blanquito rounded-full hover:bg-red-600"
+            className="cursor-pointer px-4 py-2 bg-red-500 text-blanquito rounded-full hover:bg-red-200"
             onClick={onConfirm}>
             Eliminar
           </button>

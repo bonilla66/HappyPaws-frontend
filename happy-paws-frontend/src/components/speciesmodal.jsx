@@ -31,8 +31,8 @@ export default function ModalSpecies({ show, onClose, onSave, initialData }) {
           className="w-full border p-2 rounded"
         />
         <div className="mt-4 flex justify-end gap-4">
-          <button onClick={onClose} className="btn btn-secondary px-4 py-2 rounded">Cancelar</button>
-          <button onClick={handleSubmit} className="btn btn-primary px-4 py-2 rounded">Guardar</button>
+          <button onClick={onClose} className="btn btn-secondary px-4 py-2 rounded-full hover:bg-gray-400">Cancelar</button>
+          <button onClick={handleSubmit} className="btn btn-primary px-4 py-2 rounded-full hover:bg-red-200">Guardar</button>
         </div>
       </div>
     </div>

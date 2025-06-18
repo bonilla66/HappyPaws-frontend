@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import PetCard from '../components/petcard.jsx';
-import { fetchAllPets } from '../services/petService';
+import { fetchAllPets } from '../services/petService.js';
 
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center h-64">

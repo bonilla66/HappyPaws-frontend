@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Trash2 } from "lucide-react";
 import PopUpForm from "../components/popupform.jsx";
 import ClickPopup from "../components/clickpopup.jsx";
+import api from "../services/api.js";
 
 export default function UserSettingPage() {
   const navigate = useNavigate();
@@ -12,12 +13,20 @@ export default function UserSettingPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("success");
+  const [rolesList, setRolesList] = useState([]);
 
-  const rolesList = [
-    { id: 1, nombre: "Admin" },
-    { id: 2, nombre: "Colaborador" },
-    { id: 3, nombre: "Adoptante" }
-  ];
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const res = await api.get("/enums/roles");
+        setRolesList(res.data);
+      } catch (err) {
+        toast.error("Error al cargar roles");
+        console.error(err);
+      }
+    };
+    fetchRoles();
+  }, []);
 
   const [form, setForm] = useState({
     nombre: "",
@@ -25,69 +34,98 @@ export default function UserSettingPage() {
     correo: "",
     telefono: "",
     dui: "",
-    activo: true,
   });
 
   useEffect(() => {
-    // Carga simulada de datos de usuario
-    const user = {
-      nombre: "Ana Pérez",
-      rol: "Adoptante",
-      correo: "ana.perez@example.com",
-      telefono: "77778888",
-      dui: "12345678-9",
-      activo: true,
+    const fetchUser = async () => {
+      try {
+        const res = await api.get(`/user/${id}`);
+        const user = res.data;
+        setForm({
+          nombre: user.name,
+          rol: user.rol,
+          correo: user.email,
+          telefono: user.phone,
+          dui: user.dui,
+        });
+      } catch (error) {
+        toast.error("No se pudo cargar la información del usuario");
+        console.error(error);
+      }
     };
-    setForm(user);
+    fetchUser();
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+    setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    const { nombre, correo, telefono, dui } = form;
-    if (!nombre || !correo || !telefono || !dui) {
+    const { nombre, correo, telefono, dui, rol } = form;
+
+    if (!nombre || !correo || !telefono || !dui || !rol) {
       setModalType("error");
-    } else {
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      await api.patch(`/user/${id}`, {
+        name: nombre,
+        email: correo,
+        phone: telefono,
+        DUI: dui,
+        rol: rol,
+      });
       setModalType("success");
       setEditing(false);
+    } catch (error) {
+      console.error(error);
+      setModalType("error");
+    } finally {
+      setShowModal(true);
     }
-    setShowModal(true);
   };
 
   const handleDeleteClick = () => setShowConfirm(true);
   const closeConfirm = () => setShowConfirm(false);
 
   const handleConfirmDelete = () => {
-    // Primero cerramos el modal de confirmación
     setShowConfirm(false);
-    // Mostramos el toast
     toast.success("Usuario eliminado con éxito");
-    // Y luego, tras un pequeño retardo para que se vea el toast, navegamos atrás
     setTimeout(() => navigate(-1), 1500);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    if (modalType === "success") navigate(-1);
+    if (modalType === "success") {
+      toast.success("Cambios guardados correctamente");
+      navigate(-1);
+    }
   };
 
+  if (rolesList.length === 0) {
+    return <div className="text-center text-grisito">Cargando datos...</div>;
+  }
   return (
     <div className="min-h-screen bg-amarillito py-6">
-      <h2 className="text-xl font-semibold text-negrito ml-3">Editar usuario</h2>
+      <h2 className="text-xl font-semibold text-negrito ml-3">
+        Editar usuario
+      </h2>
       <div className="max-w-3xl mx-auto bg-blanquito rounded-2xl shadow-lg overflow-hidden">
         <div className="flex justify-between items-center px-6 py-3">
           <button
             onClick={handleDeleteClick}
-            className="text-rojo hover:text-rojo/80 cursor-pointer">
+            className="text-rojo hover:text-rojo/80 cursor-pointer"
+          >
             <Trash2 size={24} />
           </button>
           <button
-            onClick={() => setEditing(e => !e)}
-            className="text-negrito hover:text-grisito cursor-pointer">
+            onClick={() => setEditing((e) => !e)}
+            className="text-negrito hover:text-grisito cursor-pointer"
+          >
             <MoreHorizontal size={24} />
           </button>
         </div>
@@ -103,11 +141,15 @@ export default function UserSettingPage() {
                 className="w-full px-2 py-1 border border-grisito rounded focus:outline-none"
               />
             ) : (
-              <h3 className="text-lg font-medium text-negrito">{form.nombre}</h3>
+              <h3 className="text-lg font-medium text-negrito">
+                {form.nombre}
+              </h3>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-grisito mb-1">Rol</label>
+            <label className="block text-sm font-medium text-grisito mb-1">
+              Rol
+            </label>
             {editing ? (
               <select
                 name="rol"
@@ -116,18 +158,22 @@ export default function UserSettingPage() {
                 className="w-full border-b border-grisito focus:outline-none"
               >
                 <option value="">Selecciona un rol</option>
-                {rolesList.map(r => (
-                  <option key={r.id} value={r.nombre}>
-                    {r.nombre}
+                {rolesList.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
                   </option>
                 ))}
               </select>
             ) : (
-              <p className="text-negrito">{form.rol}</p>
+              <p className="text-negrito">
+                {rolesList.find((r) => r.value === form.rol)?.label || form.rol}
+              </p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-grisito mb-1">Correo</label>
+            <label className="block text-sm font-medium text-grisito mb-1">
+              Correo
+            </label>
             {editing ? (
               <input
                 type="email"
@@ -141,7 +187,9 @@ export default function UserSettingPage() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-grisito mb-1">Teléfono</label>
+            <label className="block text-sm font-medium text-grisito mb-1">
+              Teléfono
+            </label>
             {editing ? (
               <input
                 type="text"
@@ -155,7 +203,9 @@ export default function UserSettingPage() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-grisito mb-1">DUI</label>
+            <label className="block text-sm font-medium text-grisito mb-1">
+              DUI
+            </label>
             {editing ? (
               <input
                 type="text"
@@ -167,16 +217,6 @@ export default function UserSettingPage() {
             ) : (
               <p className="text-negrito">{form.dui}</p>
             )}
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="activo"
-              checked={form.activo}
-              onChange={handleChange}
-              className="form-checkbox h-4 w-4 text-moradito"
-            />
-            <label className="ml-2 text-sm text-grisito">Activo</label>
           </div>
           {editing && (
             <div className="text-right">
@@ -193,7 +233,11 @@ export default function UserSettingPage() {
       {showModal && (
         <PopUpForm
           type={modalType}
-          message={modalType === "success" ? "Usuario actualizado con éxito" : "Error al actualizar usuario"}
+          message={
+            modalType === "success"
+              ? "Usuario actualizado con éxito"
+              : "Error al actualizar usuario"
+          }
           onClose={closeModal}
         />
       )}

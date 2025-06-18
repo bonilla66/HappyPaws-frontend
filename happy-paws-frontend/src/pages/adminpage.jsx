@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateUserProfile } from "../services/UserService";
+import api from "../services/api";
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -93,36 +94,39 @@ export default function AdminPage() {
       }
     }
   };
-  const [users] = useState([
-    { id: 1, nombre: "Ana Pérez", rol: "Adoptante" },
-    { id: 2, nombre: "Luis Gómez", rol: "Voluntario" },
-    { id: 3, nombre: "María Ruiz", rol: "Admin" },
-    { id: 4, nombre: "José Díaz", rol: "Adoptante" },
-    { id: 5, nombre: "Carla Ruiz", rol: "Voluntario" },
-    { id: 6, nombre: "Pedro Salazar", rol: "Adoptante" },
-    { id: 7, nombre: "Laura Méndez", rol: "Voluntario" },
-    { id: 8, nombre: "Raúl Torres", rol: "Admin" },
-  ]);
-  const [pets] = useState([
-    { id: 1, nombre: "Luna", raza: "Husky" },
-    { id: 2, nombre: "Max", raza: "Bulldog" },
-    { id: 3, nombre: "Milo", raza: "Beagle" },
-    { id: 4, nombre: "Nala", raza: "Labrador" },
-    { id: 5, nombre: "Oso", raza: "Pastor" },
-    { id: 6, nombre: "Kira", raza: "Schnauzer" },
-    { id: 7, nombre: "Rocky", raza: "Boxer" },
-    { id: 8, nombre: "Coco", raza: "Poodle" },
-  ]);
-  const [requests] = useState([
-    { id: 1, usuario: "Ana Pérez", mascota: "Luna", estado: "Pendiente" },
-    { id: 2, usuario: "Luis Gómez", mascota: "Max", estado: "Aprobada" },
-    { id: 3, usuario: "María Ruiz", mascota: "Milo", estado: "Rechazada" },
-    { id: 4, usuario: "José Díaz", mascota: "Nala", estado: "Pendiente" },
-    { id: 5, usuario: "Carla Ruiz", mascota: "Oso", estado: "Aprobada" },
-    { id: 6, usuario: "Pedro Salazar", mascota: "Kira", estado: "Pendiente" },
-    { id: 7, usuario: "Laura Méndez", mascota: "Rocky", estado: "Rechazada" },
-    { id: 8, usuario: "Raúl Torres", mascota: "Coco", estado: "Aprobada" },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [pets, setPets] = useState([]);
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [usersRes, petsRes, requestsRes] = await Promise.all([
+          api.get("/user/all"),
+          api.get("/pets/all"),
+          api.get("/aplication/all"),
+        ]);
+        setUsers(usersRes.data);
+        setPets(petsRes.data);
+        setRequests(requestsRes.data);
+      } catch (err) {
+        toast.error("Error al cargar datos del panel");
+        console.error(err);
+        console.error("Detalles del error:", err.response?.data || err.message);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const getUserNameById = (id) => {
+    const user = users.find((u) => u.id_user === id);
+    return user ? user.name : "Usuario desconocido";
+  };
+
+  const getPetNameById = (id) => {
+    const pet = pets.find((p) => p.id === id);
+    return pet ? pet.name : "Mascota desconocida";
+  };
 
   return (
     <div className="h-screen flex bg-amarillito overflow-hidden">
@@ -264,36 +268,26 @@ export default function AdminPage() {
         </h2>
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Usuarios</h3>
-          <table className="w-full table-fixed mb-2">
-            <thead>
-              <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  ID
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Nombre
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Rol
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Acción
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <div className="max-h-[120px] overflow-y-auto mx-6">
-            <table className="w-full table-fixed">
+          <div className="max-h-[200px] overflow-y-auto mx-6">
+            <table className="w-full table-fixed ">
+              <thead className="sticky top-0 bg-amarillito z-10">
+                <tr className="border-b border-grisito">
+                  <th className="px-4 py-2 text-grisito text-left">ID</th>
+                  <th className="px-4 py-2 text-grisito text-left">Nombre</th>
+                  <th className="px-4 py-2 text-grisito text-left">Rol</th>
+                  <th className="px-4 py-2 text-grisito text-left">Acción</th>
+                </tr>
+              </thead>
               <tbody className="divide-y divide-grisito">
                 {users.map((u) => (
-                  <tr key={u.id}>
-                    <td className="px-4 py-2 text-left">{u.id}</td>
-                    <td className="px-4 py-2 text-left">{u.nombre}</td>
+                  <tr key={u.id_user}>
+                    <td className="px-4 py-2 text-left">{u.id_user}</td>
+                    <td className="px-4 py-2 text-left">{u.name}</td>
                     <td className="px-4 py-2 text-left">{u.rol}</td>
                     <td className="px-4 py-2 text-left">
                       <Link
-                        to="/usersetting"
-                        className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
+                        to={`/usersetting/${u.id_user}`}
+                        className="inline-flex items-center text-negrito hover:text-moradito"
                       >
                         <Eye size={16} />
                         <span className="ml-1">Ver más</span>
@@ -307,35 +301,27 @@ export default function AdminPage() {
         </section>
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Mascotas</h3>
-          <table className="w-full table-fixed mb-2">
-            <thead>
-              <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  ID
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Nombre
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Raza
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Acción
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <div className="max-h-[120px] overflow-y-auto mx-6">
+          <div className="max-h-[200px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
+              <thead className="sticky top-0 bg-amarillito z-10">
+                <tr>
+                  <th className="px-4 py-2 text-grisito text-left">ID</th>
+                  <th className="px-4 py-2 text-grisito text-left">Nombre</th>
+                  <th className="px-4 py-2 text-grisito text-left">Raza</th>
+                  <th className="px-4 py-2 text-grisito text-left">Acción</th>
+                </tr>
+              </thead>
               <tbody className="divide-y divide-grisito">
                 {pets.map((p) => (
                   <tr key={p.id}>
                     <td className="px-4 py-2 text-left">{p.id}</td>
-                    <td className="px-4 py-2 text-left">{p.nombre}</td>
-                    <td className="px-4 py-2 text-left">{p.raza}</td>
+                    <td className="px-4 py-2 text-left">{p.name}</td>
+                    <td className="px-4 py-2 text-left">
+                      {p.breed || "Sin raza"}
+                    </td>
                     <td className="px-4 py-2 text-left">
                       <Link
-                        to="/petsetting"
+                        to={`/petsetting/${p.id}`}
                         className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
                       >
                         <Eye size={16} />
@@ -352,40 +338,32 @@ export default function AdminPage() {
           <h3 className="text-lg font-semibold text-negrito mb-1">
             Solicitudes de Adopción
           </h3>
-          <table className="w-full table-fixed mb-2">
-            <thead>
-              <tr className="border-b border-grisito">
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  ID
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Usuario
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Mascota
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Estado
-                </th>
-                <th className="px-4 py-2 text-grisito text-left sticky top-0 bg-amarillito">
-                  Acción
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <div className="max-h-[120px] overflow-y-auto mx-6">
+          <div className="max-h-[200px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
+              <thead className="sticky top-0 bg-amarillito z-10">
+                <tr className="border-b border-grisito">
+                  <th className="px-4 py-2 text-grisito text-left">ID</th>
+                  <th className="px-4 py-2 text-grisito text-left">Usuario</th>
+                  <th className="px-4 py-2 text-grisito text-left">Mascota</th>
+                  <th className="px-4 py-2 text-grisito text-left">Estado</th>
+                  <th className="px-4 py-2 text-grisito text-left">Acción</th>
+                </tr>
+              </thead>
               <tbody className="divide-y divide-grisito">
                 {requests.map((r) => (
                   <tr key={r.id}>
                     <td className="px-4 py-2 text-left">{r.id}</td>
-                    <td className="px-4 py-2 text-left">{r.usuario}</td>
-                    <td className="px-4 py-2 text-left">{r.mascota}</td>
-                    <td className="px-4 py-2 text-left">{r.estado}</td>
+                    <td className="px-4 py-2 text-left">
+                      {getUserNameById(r.userId)}
+                    </td>
+                    <td className="px-4 py-2 text-left">
+                      {getPetNameById(r.petId)}
+                    </td>
+                    <td className="px-4 py-2 text-left">{r.aplicationState}</td>
                     <td className="px-4 py-2 text-left">
                       <Link
-                        to="/solisetting"
-                        className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
+                        to={`/solisetting/${r.id}`}
+                        className="inline-flex items-center text-negrito hover:text-moradito"
                       >
                         <Eye size={16} />
                         <span className="ml-1">Ver más</span>

@@ -1,120 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModalAttribute from "../components/modalattribute";
 import ModalShelter from "../components/modalshelter";
 import PopUpForm from "../components/popupform";
 import { Edit3, Trash2, Plus } from "lucide-react";
 import ConfirmDelete from "../components/confirmdelete";
-import ModalBreed from "../components/breedmodal"
-import ModalSpecies from "../components/speciesmodal"
+import ModalBreed from "../components/breedmodal";
+import ModalSpecies from "../components/speciesmodal";
+import api from "../services/api";
+import { toast } from "react-toastify";
 
 export default function ShelterAttribute() {
-  const [shelters, setShelters] = useState([
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-    { id: 1, name: "Refugio Central", address: "San Salvador", phone: "12345678", email: "central@refugio.com" },
-    { id: 2, name: "Refugio Norte", address: "Santa Tecla", phone: "87654321", email: "norte@refugio.com" },
-  ]);
+  const [shelters, setShelters] = useState([]);
+  const [attributes, setAttributes] = useState([]);
+  const [species, setSpecies] = useState([]);
+  const [breeds, setBreeds] = useState([]);
 
-  const [attributes, setAttributes] = useState([
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-    { id: 1, attributeName: "Vision", attributeValue: "No tiene un ojo" },
-    { id: 2, attributeName: "Castrado", attributeValue: "Sí" },
-    { id: 3, attributeName: "Temperamento", attributeValue: "Amigable" },
-  ]);
 
-  const [species, setSpecies] = useState([
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-    { id: 1, name: "Ave" },
-    { id: 2, name: "Perro" },
-    { id: 3, name: "Gato" },
-  ]);
+  useEffect(() => {
+  const isArray = (data) =>
+    Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
 
-  const [breeds, setBreeds] = useState([
-    { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-     { id: 1, name: "Salchicha", speciesId: 2 },
-    { id: 2, name: "Labrador", speciesId: 2 },
-    { id: 3, name: "Siames", speciesId: 3 },
-  ]);
+  const fetchAll = async () => {
+    try {
+      const [sheltersRes, attributesRes, speciesRes, breedsRes] =
+        await Promise.all([
+          api.get("/shelters/all"),
+          api.get("/pet_attributes/all"),
+          api.get("/species/all"),
+          api.get("/breeds/all"),
+        ]);
+
+      // Logs para debug
+      console.log("Shelters:", sheltersRes.data);
+      console.log("Attributes:", attributesRes.data);
+      console.log("Species:", speciesRes.data);
+      console.log("Breeds:", breedsRes.data);
+
+      const shelters = isArray(sheltersRes.data);
+      const attributes = isArray(attributesRes.data);
+      const speciesRaw = isArray(speciesRes.data);
+      const breedsRaw = isArray(breedsRes.data);
+
+      if (shelters.length) setShelters(shelters);
+      else toast.error("Error al cargar refugios");
+
+      if (attributes.length) setAttributes(attributes);
+      else toast.error("Error al cargar atributos");
+
+      if (speciesRaw.length) {
+        const normalizedSpecies = speciesRaw.map((sp) => ({
+          id: sp.id_species,
+          name: sp.name,
+        }));
+        setSpecies(normalizedSpecies);
+      } else {
+        toast.error("Error al cargar especies");
+      }
+
+      if (breedsRaw.length) {
+        const normalizedBreeds = breedsRaw.map((b) => ({
+          id: b.id_breed,
+          name: b.name,
+          speciesId: b.speciesId,
+        }));
+        setBreeds(normalizedBreeds);
+      } else {
+        toast.error("Error al cargar razas");
+      }
+    } catch (err) {
+      console.error("Error al cargar los datos del sistema", err);
+      toast.error("Error general al cargar los datos");
+    }
+  };
+
+  fetchAll();
+}, []);
+
 
   const [showShelterModal, setShowShelterModal] = useState(false);
   const [showAttributeModal, setShowAttributeModal] = useState(false);
@@ -131,58 +92,136 @@ export default function ShelterAttribute() {
   const [popupMessage, setPopupMessage] = useState("");
 
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null); 
+  const [itemToDelete, setItemToDelete] = useState(null);
 
-  const handleSaveShelter = (data) => {
-    if (editingShelter) {
-      setShelters(prev => prev.map(s => s.id === editingShelter.id ? { ...s, ...data } : s));
-      setPopupMessage("Refugio actualizado con éxito");
-    } else {
-      setShelters(prev => [...prev, { ...data, id: Date.now() }]);
-      setPopupMessage("Refugio agregado con éxito");
+  const handleSaveShelter = async (data) => {
+    try {
+      if (editingShelter) {
+        await api.put(`/shelters/${editingShelter.id}`, data);
+        const res = await api.get("/shelters/all");
+        setShelters(res.data);
+        setPopupMessage("Refugio actualizado con éxito");
+      } else {
+        await api.post("/shelters/register", data);
+        const res = await api.get("/shelters/all");
+        setShelters(res.data);
+        setPopupMessage("Refugio agregado con éxito");
+      }
+
+      setShowShelterModal(false);
+      setEditingShelter(null);
+      showSuccessPopup();
+    } catch (error) {
+      console.error(
+        "Error al guardar refugio:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "No se pudo guardar el refugio"
+      );
     }
-    setShowShelterModal(false);
-    setEditingShelter(null);
-    showSuccessPopup();
   };
 
-  const handleSaveAttribute = (data) => {
-    if (editingAttribute) {
-      setAttributes(prev => prev.map(a => a.id === editingAttribute.id ? { ...a, ...data } : a));
-      setPopupMessage("Atributo actualizado con éxito");
-    } else {
-      setAttributes(prev => [...prev, { ...data, id: Date.now() }]);
-      setPopupMessage("Atributo agregado con éxito");
+  const handleSaveAttribute = async (data) => {
+    try {
+      if (editingAttribute) {
+        await api.put(`/pet_attributes/update/${editingAttribute.id}`, data);
+        const res = await api.get("/pet_attributes/all");
+        setAttributes(res.data);
+        setPopupMessage("Atributo actualizado con éxito");
+      } else {
+        await api.post("/pet_attributes/register", data);
+        const res = await api.get("/pet_attributes/all");
+        setAttributes(res.data);
+        setPopupMessage("Atributo agregado con éxito");
+      }
+
+      setShowAttributeModal(false);
+      setEditingAttribute(null);
+      showSuccessPopup();
+    } catch (error) {
+      console.error(
+        "Error al guardar atributo:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "No se pudo guardar el atributo"
+      );
     }
-    setShowAttributeModal(false);
-    setEditingAttribute(null);
-    showSuccessPopup();
   };
 
-  const handleSaveSpecies = (data) => {
-    if (editingSpecies) {
-      setSpecies(prev => prev.map(sp => sp.id === editingSpecies.id ? { ...sp, ...data } : sp));
-      setPopupMessage("Especie actualizada con éxito");
-    } else {
-      setSpecies(prev => [...prev, { ...data, id: Date.now() }]);
-      setPopupMessage("Especie agregada con éxito");
+  const handleSaveSpecies = async (data) => {
+    try {
+      if (editingSpecies) {
+        await api.put(`/species/${editingSpecies.id}`, data);
+        const res = await api.get("/species/all");
+        const normalized = res.data.map((sp) => ({
+          id: sp.id_species,
+          name: sp.name,
+        }));
+        setSpecies(normalized);
+        setPopupMessage("Especie actualizada con éxito");
+      } else {
+        await api.post("/species/register", data);
+        const res = await api.get("/species/all");
+        const normalized = res.data.map((sp) => ({
+          id: sp.id_species,
+          name: sp.name,
+        }));
+        setSpecies(normalized);
+        setPopupMessage("Especie agregada con éxito");
+      }
+
+      setShowSpeciesModal(false);
+      setEditingSpecies(null);
+      showSuccessPopup();
+    } catch (error) {
+      console.error(
+        "Error al guardar especie:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "No se pudo guardar la especie"
+      );
     }
-    setShowSpeciesModal(false);
-    setEditingSpecies(null);
-    showSuccessPopup();
   };
 
-  const handleSaveBreed = (data) => {
-    if (editingBreed) {
-      setBreeds(prev => prev.map(b => b.id === editingBreed.id ? { ...b, ...data } : b));
-      setPopupMessage("Raza actualizada con éxito");
-    } else {
-      setBreeds(prev => [...prev, { ...data, id: Date.now() }]);
-      setPopupMessage("Raza agregada con éxito");
+  const handleSaveBreed = async (data) => {
+    try {
+      if (editingBreed) {
+        await api.put(`/breeds/${editingBreed.id}`, data);
+        const res = await api.get("/breeds/all");
+        const normalized = res.data.map((b) => ({
+          id: b.id_breed,
+          name: b.name,
+          speciesId: b.speciesId,
+        }));
+        setBreeds(normalized);
+        setPopupMessage("Raza actualizada con éxito");
+      } else {
+        await api.post("/breeds/register", data);
+        const res = await api.get("/breeds/all");
+        const normalized = res.data.map((b) => ({
+          id: b.id_breed,
+          name: b.name,
+          speciesId: b.speciesId,
+        }));
+        setBreeds(normalized);
+        setPopupMessage("Raza agregada con éxito");
+      }
+
+      setShowBreedModal(false);
+      setEditingBreed(null);
+      showSuccessPopup();
+    } catch (error) {
+      console.error(
+        "Error al guardar raza:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "No se pudo guardar la raza"
+      );
     }
-    setShowBreedModal(false);
-    setEditingBreed(null);
-    showSuccessPopup();
   };
 
   const showSuccessPopup = () => {
@@ -200,53 +239,96 @@ export default function ShelterAttribute() {
     setItemToDelete(null);
   };
 
-  const performDelete = () => {
+  const performDelete = async () => {
     if (!itemToDelete) return;
 
-    switch(itemToDelete.type) {
-      case "shelter":
-        setShelters(prev => prev.filter(s => s.id !== itemToDelete.id));
-        setPopupMessage("Refugio eliminado con éxito");
-        break;
-      case "attribute":
-        setAttributes(prev => prev.filter(a => a.id !== itemToDelete.id));
-        setPopupMessage("Atributo eliminado con éxito");
-        break;
-      case "species":
-        setSpecies(prev => prev.filter(sp => sp.id !== itemToDelete.id));
-        setPopupMessage("Especie eliminada con éxito");
-        break;
-      case "breed":
-        setBreeds(prev => prev.filter(b => b.id !== itemToDelete.id));
-        setPopupMessage("Raza eliminada con éxito");
-        break;
-      default:
-        break;
+    try {
+      switch (itemToDelete.type) {
+        case "shelter": {
+          await api.delete(`/shelters/${itemToDelete.id}`);
+          const sheltersRes = await api.get("/shelters/all");
+          setShelters(sheltersRes.data);
+          setPopupMessage("Refugio eliminado con éxito");
+          break;
+        }
+
+        case "attribute": {
+          await api.delete(`/pet_attributes/delete/${itemToDelete.id}`);
+          const attrRes = await api.get("/pet_attributes/all");
+          setAttributes(attrRes.data);
+          setPopupMessage("Atributo eliminado con éxito");
+          break;
+        }
+
+        case "species": {
+          await api.delete(`/species/${itemToDelete.id}`);
+          const speciesRes = await api.get("/species/all");
+          const normalizedSpecies = speciesRes.data.map((sp) => ({
+            id: sp.id_species,
+            name: sp.name,
+          }));
+          setSpecies(normalizedSpecies);
+          setPopupMessage("Especie eliminada con éxito");
+          break;
+        }
+
+        case "breed": {
+          await api.delete(`/breeds/${itemToDelete.id}`);
+          const breedsRes = await api.get("/breeds/all");
+          const normalizedBreeds = breedsRes.data.map((b) => ({
+            id: b.id_breed,
+            name: b.name,
+            speciesId: b.speciesId,
+          }));
+          setBreeds(normalizedBreeds);
+          setPopupMessage("Raza eliminada con éxito");
+          break;
+        }
+
+        default:
+          return;
+      }
+
+      setPopupType("success");
+    } catch (error) {
+      console.error(
+        "Error al eliminar:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "No se pudo eliminar el elemento"
+      );
+      setPopupType("error");
+      setPopupMessage("Error al eliminar");
     }
-    setPopupType("success");
+
     setPopupVisible(true);
     setConfirmVisible(false);
     setItemToDelete(null);
   };
-
   const closePopup = () => setPopupVisible(false);
 
   return (
     <div className="h-full bg-amarillito px-6 py-2 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="flex flex-col">
-        <h2 className="text-xl font-bold text-center text-azulito">Gestión de refugios</h2>
+        <h2 className="text-xl font-bold text-center text-azulito">
+          Gestión de refugios
+        </h2>
         <button
-          style={{ backgroundColor: 'transparent', color: 'black' }}
+          style={{ backgroundColor: "transparent", color: "black" }}
           className="btn self-end text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full transition-colors duration-300"
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#E4CFEF';
-            e.currentTarget.style.color = 'white';
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#E4CFEF";
+            e.currentTarget.style.color = "white";
           }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "black";
           }}
-          onClick={() => { setEditingShelter(null); setShowShelterModal(true); }}
+          onClick={() => {
+            setEditingShelter(null);
+            setShowShelterModal(true);
+          }}
           aria-label="Agregar Refugio"
         >
           <Plus size={28} strokeWidth={2} />
@@ -261,35 +343,59 @@ export default function ShelterAttribute() {
               </tr>
             </thead>
             <tbody>
-              {shelters.map(s => (
-                <tr key={s.id} className="border-b border-grisito last:border-0">
+              {shelters.map((s) => (
+                <tr
+                  key={s.id}
+                  className="border-b border-grisito last:border-0"
+                >
                   <td className="py-2 text-center">{s.id}</td>
                   <td className="py-2 text-center">{s.name}</td>
                   <td className="py-2 flex gap-6 justify-center items-center">
-                    <Edit3 className="cursor-pointer" size={18} onClick={() => { setEditingShelter(s); setShowShelterModal(true); }}/>
-                    <Trash2 className="cursor-pointer" size={18} onClick={() => confirmDelete(s.id, "shelter")}/>
+                    <Edit3
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => {
+                        setEditingShelter(s);
+                        setShowShelterModal(true);
+                      }}
+                    />
+                    <Trash2
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => confirmDelete(s.id, "shelter")}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <ModalShelter show={showShelterModal} onClose={() => setShowShelterModal(false)} onSave={handleSaveShelter} initialData={editingShelter} />
+        <ModalShelter
+          show={showShelterModal}
+          onClose={() => setShowShelterModal(false)}
+          onSave={handleSaveShelter}
+          initialData={editingShelter}
+        />
       </div>
       <div className="flex flex-col">
-        <h2 className="text-xl font-bold text-center text-azulito">Gestión de atributos</h2>
+        <h2 className="text-xl font-bold text-center text-azulito">
+          Gestión de atributos
+        </h2>
         <button
-          style={{ backgroundColor: 'transparent', color: 'black' }}
+          style={{ backgroundColor: "transparent", color: "black" }}
           className="btn self-end text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full transition-colors duration-300"
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#E4CFEF';
-            e.currentTarget.style.color = 'white';
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#E4CFEF";
+            e.currentTarget.style.color = "white";
           }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "black";
           }}
-          onClick={() => { setEditingAttribute(null); setShowAttributeModal(true); }}
+          onClick={() => {
+            setEditingAttribute(null);
+            setShowAttributeModal(true);
+          }}
           aria-label="Agregar Atributo"
         >
           <Plus size={28} strokeWidth={2} />
@@ -305,36 +411,60 @@ export default function ShelterAttribute() {
               </tr>
             </thead>
             <tbody>
-              {attributes.map(a => (
-                <tr key={a.id} className="border-b border-grisito last:border-0">
+              {attributes.map((a) => (
+                <tr
+                  key={a.id}
+                  className="border-b border-grisito last:border-0"
+                >
                   <td className="py-2 text-center">{a.id}</td>
                   <td className="py-2 text-center">{a.attributeName}</td>
                   <td className="py-2 text-center">{a.attributeValue}</td>
                   <td className="py-2 flex gap-6 justify-center items-center">
-                    <Edit3 className="cursor-pointer" size={18} onClick={() => { setEditingAttribute(a); setShowAttributeModal(true); }}/>
-                    <Trash2 className="cursor-pointer" size={18} onClick={() => confirmDelete(a.id, "attribute")} />
+                    <Edit3
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => {
+                        setEditingAttribute(a);
+                        setShowAttributeModal(true);
+                      }}
+                    />
+                    <Trash2
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => confirmDelete(a.id, "attribute")}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <ModalAttribute show={showAttributeModal} onClose={() => setShowAttributeModal(false)} onSave={handleSaveAttribute} initialData={editingAttribute} />
+        <ModalAttribute
+          show={showAttributeModal}
+          onClose={() => setShowAttributeModal(false)}
+          onSave={handleSaveAttribute}
+          initialData={editingAttribute}
+        />
       </div>
       <div className="flex flex-col">
-        <h2 className="text-xl font-bold mb-2 text-center text-azulito">Gestión de especies</h2>
+        <h2 className="text-xl font-bold mb-2 text-center text-azulito">
+          Gestión de especies
+        </h2>
         <button
-          style={{ backgroundColor: 'transparent', color: 'black' }}
+          style={{ backgroundColor: "transparent", color: "black" }}
           className="btn mb-2 self-end text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full transition-colors duration-300"
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#E4CFEF';
-            e.currentTarget.style.color = 'white';
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#E4CFEF";
+            e.currentTarget.style.color = "white";
           }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "black";
           }}
-          onClick={() => { setEditingSpecies(null); setShowSpeciesModal(true); }}
+          onClick={() => {
+            setEditingSpecies(null);
+            setShowSpeciesModal(true);
+          }}
           aria-label="Agregar Especie"
         >
           <Plus size={28} strokeWidth={2} />
@@ -349,35 +479,59 @@ export default function ShelterAttribute() {
               </tr>
             </thead>
             <tbody>
-              {species.map(sp => (
-                <tr key={sp.id} className="border-b border-grisito last:border-0">
+              {species.map((sp) => (
+                <tr
+                  key={sp.id}
+                  className="border-b border-grisito last:border-0"
+                >
                   <td className="py-2 text-center">{sp.id}</td>
                   <td className="py-2 text-center">{sp.name}</td>
                   <td className="py-2 flex gap-6 justify-center items-center">
-                    <Edit3 className="cursor-pointer" size={18} onClick={() => { setEditingSpecies(sp); setShowSpeciesModal(true); }} />
-                    <Trash2 className="cursor-pointer" size={18} onClick={() => confirmDelete(sp.id, "species")} />
+                    <Edit3
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => {
+                        setEditingSpecies(sp);
+                        setShowSpeciesModal(true);
+                      }}
+                    />
+                    <Trash2
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => confirmDelete(sp.id, "species")}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <ModalSpecies show={showSpeciesModal} onClose={() => setShowSpeciesModal(false)} onSave={handleSaveSpecies} initialData={editingSpecies} />
+        <ModalSpecies
+          show={showSpeciesModal}
+          onClose={() => setShowSpeciesModal(false)}
+          onSave={handleSaveSpecies}
+          initialData={editingSpecies}
+        />
       </div>
       <div className="flex flex-col">
-        <h2 className="text-xl font-bold mb-2 text-center text-azulito">Gestión de razas</h2>
+        <h2 className="text-xl font-bold mb-2 text-center text-azulito">
+          Gestión de razas
+        </h2>
         <button
-          style={{ backgroundColor: 'transparent', color: 'black' }}
+          style={{ backgroundColor: "transparent", color: "black" }}
           className="btn mb-2 self-end text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full transition-colors duration-300"
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = '#E4CFEF';
-            e.currentTarget.style.color = 'white';
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#E4CFEF";
+            e.currentTarget.style.color = "white";
           }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "black";
           }}
-          onClick={() => { setEditingBreed(null); setShowBreedModal(true); }}
+          onClick={() => {
+            setEditingBreed(null);
+            setShowBreedModal(true);
+          }}
           aria-label="Agregar Raza"
         >
           <Plus size={28} strokeWidth={2} />
@@ -393,21 +547,40 @@ export default function ShelterAttribute() {
               </tr>
             </thead>
             <tbody>
-              {breeds.map(b => (
-                <tr key={b.id} className="border-b border-grisito last:border-0">
+              {breeds.map((b) => (
+                <tr
+                  key={b.id}
+                  className="border-b border-grisito last:border-0"
+                >
                   <td className="py-2 text-center">{b.id}</td>
                   <td className="py-2 text-center">{b.name}</td>
                   <td className="py-2 text-center">{b.speciesId}</td>
                   <td className="py-2 flex gap-6 justify-center items-center">
-                    <Edit3 className="cursor-pointer" size={18} onClick={() => { setEditingBreed(b); setShowBreedModal(true); }} />
-                    <Trash2 className="cursor-pointer" size={18} onClick={() => confirmDelete(b.id, "breed")} />
+                    <Edit3
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => {
+                        setEditingBreed(b);
+                        setShowBreedModal(true);
+                      }}
+                    />
+                    <Trash2
+                      className="cursor-pointer"
+                      size={18}
+                      onClick={() => confirmDelete(b.id, "breed")}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <ModalBreed show={showBreedModal} onClose={() => setShowBreedModal(false)} onSave={handleSaveBreed} initialData={editingBreed} />
+        <ModalBreed
+          show={showBreedModal}
+          onClose={() => setShowBreedModal(false)}
+          onSave={handleSaveBreed}
+          initialData={editingBreed}
+        />
       </div>
       {popupVisible && (
         <PopUpForm
