@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateUserProfile } from "../services/UserService";
+import api from "../services/api";
 
 export default function ColaboradorPage() {
   const navigate = useNavigate();
@@ -67,16 +68,15 @@ export default function ColaboradorPage() {
         name: nombre,
         email: correo,
         phone: telefono,
-        rol: formValues.rol,
       };
 
+      console.log("ID que se envía al patch:", user.id);
       const updatedUser = await updateUserProfile(user.id, updatedData);
 
       setFormValues({
         nombre: updatedUser.name,
         correo: updatedUser.email,
         telefono: updatedUser.phone,
-        dui: updatedUser.dui,
         rol: updatedUser.rol,
       });
 
@@ -92,27 +92,40 @@ export default function ColaboradorPage() {
     }
   };
 
-  const [pets] = useState([
-    { id: 1, nombre: "Luna", raza: "Husky" },
-    { id: 2, nombre: "Max", raza: "Bulldog" },
-    { id: 3, nombre: "Milo", raza: "Beagle" },
-    { id: 4, nombre: "Nala", raza: "Labrador" },
-    { id: 5, nombre: "Oso", raza: "Pastor" },
-    { id: 6, nombre: "Kira", raza: "Schnauzer" },
-    { id: 7, nombre: "Rocky", raza: "Boxer" },
-    { id: 8, nombre: "Coco", raza: "Poodle" },
-  ]);
+  const [pets, setPets] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loadingPets, setLoadingPets] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
 
-  const [requests] = useState([
-    { id: 1, usuario: "Ana Pérez", mascota: "Luna", estado: "Pendiente" },
-    { id: 2, usuario: "Luis Gómez", mascota: "Max", estado: "Aprobada" },
-    { id: 3, usuario: "María Ruiz", mascota: "Milo", estado: "Rechazada" },
-    { id: 4, usuario: "José Díaz", mascota: "Nala", estado: "Pendiente" },
-    { id: 5, usuario: "Carla Ruiz", mascota: "Oso", estado: "Aprobada" },
-    { id: 6, usuario: "Pedro Salazar", mascota: "Kira", estado: "Pendiente" },
-    { id: 7, usuario: "Laura Méndez", mascota: "Rocky", estado: "Rechazada" },
-    { id: 8, usuario: "Raúl Torres", mascota: "Coco", estado: "Aprobada" },
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [petsRes, requestsRes] = await Promise.all([
+          api.get("/pets/all"),
+          api.get("/aplication/all"),
+        ]);
+
+        setPets(petsRes.data);
+        setRequests(requestsRes.data);
+      } catch (error) {
+        toast.error("Error al cargar datos");
+        console.error(error);
+      } finally {
+        setLoadingPets(false);
+        setLoadingRequests(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loadingPets || loadingRequests) {
+    return (
+      <div className="h-screen w-full bg-amarillito flex items-center justify-center text-2xl text-negrito">
+        Cargando información...
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex bg-amarillito overflow-hidden">
@@ -275,24 +288,36 @@ export default function ColaboradorPage() {
           </table>
           <div className="max-h-[180px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
-              <tbody className="divide-y divide-grisito">
-                {pets.map((p) => (
-                  <tr key={p.id}>
-                    <td className="px-4 py-2 text-left">{p.id}</td>
-                    <td className="px-4 py-2 text-left">{p.nombre}</td>
-                    <td className="px-4 py-2 text-left">{p.raza}</td>
-                    <td className="px-4 py-2 text-left">
-                      <Link
-                        to="/petsetting"
-                        className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
-                      >
-                        <Eye size={16} />
-                        <span className="ml-1">Ver más</span>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+             <tbody className="divide-y divide-grisito">
+  {pets.length > 0 ? (
+    pets.map((p) => (
+      <tr key={p.id}>
+        <td className="px-4 py-2 text-left">{p.id}</td>
+        <td className="px-4 py-2 text-left">{p.name}</td>
+        <td className="px-4 py-2 text-left">{p.breed || "Sin raza"}</td>
+        <td className="px-4 py-2 text-left">
+          <Link
+            to="/editpet"
+            state={{ id: p.id }}
+            className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
+          >
+            <Eye size={16} />
+            <span className="ml-1">Ver más</span>
+          </Link>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td
+        colSpan="4"
+        className="px-4 py-4 text-center text-grisito italic"
+      >
+        No hay mascotas registradas.
+      </td>
+    </tr>
+  )}
+</tbody>
             </table>
           </div>
         </section>
@@ -324,24 +349,36 @@ export default function ColaboradorPage() {
           <div className="max-h-[180px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
               <tbody className="divide-y divide-grisito">
-                {requests.map((r) => (
-                  <tr key={r.id}>
-                    <td className="px-4 py-2 text-left">{r.id}</td>
-                    <td className="px-4 py-2 text-left">{r.usuario}</td>
-                    <td className="px-4 py-2 text-left">{r.mascota}</td>
-                    <td className="px-4 py-2 text-left">{r.estado}</td>
-                    <td className="px-4 py-2 text-left">
-                      <Link
-                        to="/solisetting"
-                        className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
-                      >
-                        <Eye size={16} />
-                        <span className="ml-1">Ver más</span>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+  {requests.length > 0 ? (
+    requests.map((r) => (
+      <tr key={r.id}>
+        <td className="px-4 py-2 text-left">{r.id}</td>
+        <td className="px-4 py-2 text-left">{r.userId}</td>
+        <td className="px-4 py-2 text-left">{r.petId}</td>
+        <td className="px-4 py-2 text-left">{r.aplicationState}</td>
+        <td className="px-4 py-2 text-left">
+          <Link
+            to={`/solisetting/${r.id}`}
+            className="inline-flex items-center text-negrito hover:text-moradito"
+          >
+            <Eye size={16} />
+            <span className="ml-1">Ver más</span>
+          </Link>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td
+        colSpan="5"
+        className="px-4 py-4 text-center text-grisito italic"
+      >
+        No hay solicitudes registradas.
+      </td>
+    </tr>
+  )}
+</tbody>
+
             </table>
           </div>
         </section>

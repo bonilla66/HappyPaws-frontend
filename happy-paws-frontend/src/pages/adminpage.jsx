@@ -98,6 +98,10 @@ export default function AdminPage() {
   const [pets, setPets] = useState([]);
   const [requests, setRequests] = useState([]);
 
+  const [loadingPets, setLoadingPets] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,6 +117,10 @@ export default function AdminPage() {
         toast.error("Error al cargar datos del panel");
         console.error(err);
         console.error("Detalles del error:", err.response?.data || err.message);
+      } finally {
+        setLoadingUsers(false);
+        setLoadingPets(false);
+        setLoadingRequests(false);
       }
     };
     fetchData();
@@ -127,6 +135,14 @@ export default function AdminPage() {
     const pet = pets.find((p) => p.id === id);
     return pet ? pet.name : "Mascota desconocida";
   };
+
+  if (loadingUsers || loadingPets || loadingRequests) {
+    return (
+      <div className="h-screen w-full bg-amarillito flex items-center justify-center text-2xl text-negrito">
+        Cargando datos del panel...
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex bg-amarillito overflow-hidden">
@@ -312,25 +328,36 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-grisito">
-                {pets.map((p) => (
-                  <tr key={p.id}>
-                    <td className="px-4 py-2 text-left">{p.id}</td>
-                    <td className="px-4 py-2 text-left">{p.name}</td>
-                    <td className="px-4 py-2 text-left">
-                      {p.breed || "Sin raza"}
-                    </td>
-                    <td className="px-4 py-2 text-left">
-                      <Link
-                        to="/editpet"
-                        state={{ id: p.id }}
-                        className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
-                      >
-                        <Eye size={16} />
-                        <span className="ml-1">Ver más</span>
-                      </Link>
+                {pets.length > 0 ? (
+                  pets.map((p) => (
+                    <tr key={p.id}>
+                      <td className="px-4 py-2 text-left">{p.id}</td>
+                      <td className="px-4 py-2 text-left">{p.name}</td>
+                      <td className="px-4 py-2 text-left">
+                        {p.breed || "Sin raza"}
+                      </td>
+                      <td className="px-4 py-2 text-left">
+                        <Link
+                          to="/editpet"
+                          state={{ id: p.id }}
+                          className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
+                        >
+                          <Eye size={16} />
+                          <span className="ml-1">Ver más</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="px-4 py-4 text-center text-grisito italic"
+                    >
+                      No hay mascotas registradas.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -351,27 +378,40 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-grisito">
-                {requests.map((r) => (
-                  <tr key={r.id}>
-                    <td className="px-4 py-2 text-left">{r.id}</td>
-                    <td className="px-4 py-2 text-left">
-                      {getUserNameById(r.userId)}
-                    </td>
-                    <td className="px-4 py-2 text-left">
-                      {getPetNameById(r.petId)}
-                    </td>
-                    <td className="px-4 py-2 text-left">{r.aplicationState}</td>
-                    <td className="px-4 py-2 text-left">
-                      <Link
-                        to={`/solisetting/${r.id}`}
-                        className="inline-flex items-center text-negrito hover:text-moradito"
-                      >
-                        <Eye size={16} />
-                        <span className="ml-1">Ver más</span>
-                      </Link>
+                {requests.length > 0 ? (
+                  requests.map((r) => (
+                    <tr key={r.id}>
+                      <td className="px-4 py-2 text-left">{r.id}</td>
+                      <td className="px-4 py-2 text-left">
+                        {getUserNameById(r.userId)}
+                      </td>
+                      <td className="px-4 py-2 text-left">
+                        {getPetNameById(r.petId)}
+                      </td>
+                      <td className="px-4 py-2 text-left">
+                        {r.aplicationState}
+                      </td>
+                      <td className="px-4 py-2 text-left">
+                        <Link
+                          to={`/solisetting/${r.id}`}
+                          className="inline-flex items-center text-negrito hover:text-moradito"
+                        >
+                          <Eye size={16} />
+                          <span className="ml-1">Ver más</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="px-4 py-4 text-center text-grisito italic"
+                    >
+                      No hay solicitudes registradas.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
