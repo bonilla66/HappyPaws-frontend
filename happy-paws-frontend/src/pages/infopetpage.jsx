@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPetById } from "../services/petService";
 import { ArrowLeft, PawPrint, Syringe, Bug, CheckCircle } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function InfoPagePet() {
   const { id } = useParams();
@@ -9,6 +10,7 @@ export default function InfoPagePet() {
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +56,17 @@ export default function InfoPagePet() {
       attributes: rawPet.attributes || [],
     };
   }
+    const handleAdopt = () => {
+    if (!user) {
+      alert("Debes iniciar sesión para adoptar una mascota.");
+      navigate("/login");
+      return;
+    }
+
+    localStorage.setItem("selectedPetId", pet.id);
+    navigate("/adoptform");
+  };
+
 
   if (loading)
     return <div className="w-screen h-screen flex items-center justify-center bg-amarillito text-negrito text-xl">Cargando mascota...</div>;
@@ -156,12 +169,13 @@ export default function InfoPagePet() {
       )}
 
       <div className="h-20 text-center mt-10">
-        <button
-          onClick={() => navigate("/adoptform")}
-          className="px-8 py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
-        >
-          Adóptame →
-        </button>
+     <button
+      onClick={handleAdopt}
+      className="px-8 py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
+>
+      Adóptame →
+      </button>
+
       </div>
     </div>
   );
