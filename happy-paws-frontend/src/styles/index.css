@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
+
 
 
 html, body, #root {
@@ -20,6 +22,7 @@ html, body, #root {
     --blanquito:    #FFFFFF;
     --negrito:      #000000;
     --grisito:      #AEACAC;
+    --amarillito2:  #FFF5EE;
   }
 }
 
@@ -33,6 +36,7 @@ html, body, #root {
   .bg-blanquito     { background-color: var(--blanquito) }
   .bg-negrito       { background-color: var(--negrito) }
   .bg-grisito       { background-color: var(--grisito) }
+  .bg-amarillito2   { background-color: var(--amarillito2)}
 
   .text-azulito       { color: var(--azulito) }
   .text-celestito     { color: var(--celestito) }
@@ -43,6 +47,7 @@ html, body, #root {
   .text-blanquito     { color: var(--blanquito) }
   .text-negrito       { color: var(--negrito) }
   .text-grisito       { color: var(--grisito) }
+  .text-amarillito2   { color: var(--amarillito2)}
 
 }
 

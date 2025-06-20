@@ -24,14 +24,16 @@ import Unauthorized from "./pages/unauthorized.jsx";
 import fondito from "./assets/bannerHoriz.jpg";
 import { useAuth } from "./context/AuthContext.jsx";
 import EditPetPage from "./pages/editpetpage.jsx";
-export default function App() {
 
+export default function App() {
   const { loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center text-xl text-gray-600 h-full w-full"
-      style={{ backgroundImage: `url(${fondito})` }}>
+      <div
+        className="flex items-center justify-center text-xl text-gray-600 h-full w-full"
+        style={{ backgroundImage: `url(${fondito})` }}
+      >
         Cargando sesión...
       </div>
     );
@@ -47,22 +49,23 @@ export default function App() {
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
           <Route path="profilepage" element={<ProfilePage />} />
-          <Route path="editpet" element={<EditPetPage/>} />
-          <Route 
-          path="adminpage" 
-          element={
-            <RoleProtectedRoute allowedRoles={["ADMIN"]}>
-              <AdminPage />
-            </RoleProtectedRoute>
-          } 
+          <Route path="editpet" element={<EditPetPage />} />
+          <Route
+            path="adminpage"
+            element={
+              <RoleProtectedRoute allowedRoles={["ADMIN"]}>
+                <AdminPage />
+              </RoleProtectedRoute>
+            }
           />
-          <Route 
-          path="colaboradorpage" 
-          element={
-            <RoleProtectedRoute allowedRoles={["COLABORADOR"]}>
-              <ColaboradorPage />
-            </RoleProtectedRoute>
-          } />
+          <Route
+            path="colaboradorpage"
+            element={
+              <RoleProtectedRoute allowedRoles={["COLABORADOR"]}>
+                <ColaboradorPage />
+              </RoleProtectedRoute>
+            }
+          />
           <Route path="addpetform" element={<AddPetForm />} />
           <Route path="usersetting/:id" element={<UserSettingPage />} />
           <Route path="solisetting/:id" element={<SolicitudSettingPage />} />
