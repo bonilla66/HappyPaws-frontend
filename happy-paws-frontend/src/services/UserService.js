@@ -1,4 +1,5 @@
 import api from "./api"; 
+import axios from "axios";
 
 
 export const updateUserProfile = async (id, data) => {
@@ -12,4 +13,13 @@ export const updateUserProfile = async (id, data) => {
     }
     throw new Error("Error al actualizar el perfil");
   }
+};
+export const getUserApplications = async () => {
+  const res = await api.get("/aplication/by-user"); 
+  return res.data;
+};
+
+export const getAcceptedApplications = async () => {
+  const response = await api.get(`/aplication/accepted`);
+  return response.data;
 };

@@ -4,10 +4,14 @@ import { toast } from "react-toastify";
 import { UserRound, MoreHorizontal, Mail, Phone, IdCard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateUserProfile } from "../services/UserService";
+import { getUserApplications, getAcceptedApplications } from "../services/UserService";
+
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
+ 
+
 
   const { user, logout } = useAuth();
 
@@ -19,17 +23,30 @@ export default function ProfilePage() {
     dui: user?.dui || "",
   });
 
-  useEffect(() => {
-    if (user) {
-      setFormValues({
-        nombre: user.name || "",
-        rol: user.rol || "",
-        correo: user.email || "",
-        telefono: user.phone || "",
-        dui: user.dui || "",
-      });
-    }
-  }, [user]);
+useEffect(() => {
+  if (user) {
+    setFormValues({
+      nombre: user.name || "",
+      rol: user.rol || "",
+      correo: user.email || "",
+      telefono: user.phone || "",
+      dui: user.dui || "",
+    });
+    const fetchData = async () => {
+      try {
+        const solicitudesData = await getUserApplications(user.email);
+        const historialData = await getAcceptedApplications();
+        setSolicitudes(solicitudesData);
+        setHistorial(historialData);
+      } catch (error) {
+        console.error("Error al cargar solicitudes:", error);
+        toast.error("Error al cargar tus solicitudes");
+      }
+    };
+
+    fetchData();
+  }
+}, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,19 +91,8 @@ export default function ProfilePage() {
     }
   };
 
-  const solicitudes = [...Array(10)].map((_, i) => ({
-    mascota: `Mascota ${i + 1}`,
-    fecha: `2025-05-${(i + 1).toString().padStart(2, "0")}`,
-    estado: i % 2 === 0 ? "Pendiente" : "Completada",
-    sexo: i % 2 === 0 ? "Macho" : "Hembra",
-    tipo: i % 2 === 0 ? "Perro" : "Gato",
-  }));
-  const historial = [...Array(8)].map((_, i) => ({
-    mascota: `Adoptado ${i + 1}`,
-    fecha: `2024-0${(i % 9) + 1}-15`,
-    sexo: i % 2 === 0 ? "Macho" : "Hembra",
-    tipo: i % 2 === 0 ? "Perro" : "Gato",
-  }));
+ const [solicitudes, setSolicitudes] = useState([]);
+   const [historial, setHistorial] = useState([]);
 
   return (
     <div className="min-h-screen bg-amarillito p-6">
@@ -239,15 +245,15 @@ export default function ProfilePage() {
             <div className="max-h-[250px] overflow-y-auto">
               <table className="w-full table-fixed">
                 <tbody className="divide-y divide-grisito">
-                  {solicitudes.map((row, i) => (
-                    <tr key={i}>
-                      <td className="px-4 py-2 text-center">{row.mascota}</td>
-                      <td className="px-4 py-2 text-center">{row.fecha}</td>
-                      <td className="px-4 py-2 text-center">{row.estado}</td>
-                      <td className="px-4 py-2 text-center">{row.sexo}</td>
-                      <td className="px-4 py-2 text-center">{row.tipo}</td>
-                    </tr>
-                  ))}
+                {solicitudes.map((row, i) => (
+              <tr key={i}>
+              <td className="px-4 py-2 text-center">{row.pet}</td>
+              <td className="px-4 py-2 text-center">{row.aplicationDate}</td>
+              <td className="px-4 py-2 text-center">{row.state}</td>
+              <td className="px-4 py-2 text-center">{row.gender}</td>
+              <td className="px-4 py-2 text-center">{row.specie}</td>
+              </tr>
+               ))}
                 </tbody>
               </table>
             </div>
@@ -277,14 +283,14 @@ export default function ProfilePage() {
             <div className="max-h-[250px] overflow-y-auto">
               <table className="w-full table-fixed">
                 <tbody className="divide-y divide-grisito">
-                  {historial.map((row, i) => (
-                    <tr key={i}>
-                      <td className="px-4 py-2 text-center">{row.mascota}</td>
-                      <td className="px-4 py-2 text-center">{row.fecha}</td>
-                      <td className="px-4 py-2 text-center">{row.sexo}</td>
-                      <td className="px-4 py-2 text-center">{row.tipo}</td>
-                    </tr>
-                  ))}
+                 {historial.map((row, i) => (
+              <tr key={i}>
+              <td className="px-4 py-2 text-center">{row.pet}</td>
+              <td className="px-4 py-2 text-center">{row.aplicationDate}</td>
+              <td className="px-4 py-2 text-center">{row.gender}</td>
+              <td className="px-4 py-2 text-center">{row.specie}</td>
+              </tr>
+               ))}
                 </tbody>
               </table>
             </div>

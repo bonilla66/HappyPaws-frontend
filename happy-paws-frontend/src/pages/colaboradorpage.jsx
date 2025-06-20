@@ -28,6 +28,11 @@ export default function ColaboradorPage() {
     dui: "",
   });
 
+  const [pets, setPets] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loadingPets, setLoadingPets] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+
   useEffect(() => {
     if (user) {
       setFormValues({
@@ -39,6 +44,27 @@ export default function ColaboradorPage() {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [petsRes, requestsRes] = await Promise.all([
+          api.get("/pets/all"),
+          api.get("/aplication/all"),
+        ]);
+        // Asume que requestsRes.data es un array con campos: id, userName, petName, aplicationState, etc
+        setPets(petsRes.data);
+        setRequests(requestsRes.data);
+      } catch (error) {
+        toast.error("Error al cargar datos");
+        console.error(error);
+      } finally {
+        setLoadingPets(false);
+        setLoadingRequests(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -57,29 +83,23 @@ export default function ColaboradorPage() {
 
   const handleSave = async () => {
     const { nombre, correo, telefono } = formValues;
-
     if (!nombre || !correo || !telefono) {
       toast.error("Por favor, complete todos los campos");
       return;
     }
-
     try {
       const updatedData = {
         name: nombre,
         email: correo,
         phone: telefono,
       };
-
-      console.log("ID que se envía al patch:", user.id);
       const updatedUser = await updateUserProfile(user.id, updatedData);
-
       setFormValues({
         nombre: updatedUser.name,
         correo: updatedUser.email,
         telefono: updatedUser.phone,
         rol: updatedUser.rol,
       });
-
       toast.success("Perfil actualizado con éxito");
       setEditing(false);
     } catch (error) {
@@ -92,33 +112,6 @@ export default function ColaboradorPage() {
     }
   };
 
-  const [pets, setPets] = useState([]);
-  const [requests, setRequests] = useState([]);
-  const [loadingPets, setLoadingPets] = useState(true);
-  const [loadingRequests, setLoadingRequests] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [petsRes, requestsRes] = await Promise.all([
-          api.get("/pets/all"),
-          api.get("/aplication/all"),
-        ]);
-
-        setPets(petsRes.data);
-        setRequests(requestsRes.data);
-      } catch (error) {
-        toast.error("Error al cargar datos");
-        console.error(error);
-      } finally {
-        setLoadingPets(false);
-        setLoadingRequests(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   if (loadingPets || loadingRequests) {
     return (
       <div className="h-screen w-full bg-amarillito flex items-center justify-center text-2xl text-negrito">
@@ -129,6 +122,7 @@ export default function ColaboradorPage() {
 
   return (
     <div className="h-screen flex bg-amarillito overflow-hidden">
+      {/* Panel izquierdo perfil */}
       <div className="w-1/5 border-r border-grisito p-6 relative">
         <h1 className="text-xl font-light text-azulito mb-6">
           Información de mi perfil
@@ -262,10 +256,13 @@ export default function ColaboradorPage() {
         </button>
       </div>
 
-      <div className="w-4/5 p-6 space-y-6">
+      {/* Panel derecho - Mascotas y Solicitudes */}
+      <div className="w-4/5 p-6 space-y-6 overflow-auto">
         <h2 className="text-2xl font-semibold text-negrito mb-2 mt-0">
           Panel de Administración
         </h2>
+
+        {/* Sección Mascotas */}
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Mascotas</h3>
           <table className="w-full table-fixed mb-2">
@@ -288,39 +285,41 @@ export default function ColaboradorPage() {
           </table>
           <div className="max-h-[180px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
-             <tbody className="divide-y divide-grisito">
-  {pets.length > 0 ? (
-    pets.map((p) => (
-      <tr key={p.id}>
-        <td className="px-4 py-2 text-left">{p.id}</td>
-        <td className="px-4 py-2 text-left">{p.name}</td>
-        <td className="px-4 py-2 text-left">{p.breed || "Sin raza"}</td>
-        <td className="px-4 py-2 text-left">
-          <Link
-            to="/editpet"
-            state={{ id: p.id }}
-            className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
-          >
-            <Eye size={16} />
-            <span className="ml-1">Ver más</span>
-          </Link>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td
-        colSpan="4"
-        className="px-4 py-4 text-center text-grisito italic"
-      >
-        No hay mascotas registradas.
-      </td>
-    </tr>
-  )}
-</tbody>
+              <tbody className="divide-y divide-grisito">
+                {pets.length > 0 ? (
+                  pets.map((p) => (
+                    <tr key={p.id}>
+                      <td className="px-4 py-2 text-left">{p.id}</td>
+                      <td className="px-4 py-2 text-left">{p.name}</td>
+                      <td className="px-4 py-2 text-left">{p.breed || "Sin raza"}</td>
+                      <td className="px-4 py-2 text-left">
+                        <Link
+                          to="/editpet"
+                          state={{ id: p.id }}
+                          className="inline-flex items-center text-negrito cursor-pointer hover:text-moradito"
+                        >
+                          <Eye size={16} />
+                          <span className="ml-1">Ver más</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="px-4 py-4 text-center text-grisito italic"
+                    >
+                      No hay mascotas registradas.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
         </section>
+
+        {/* Sección Solicitudes */}
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">
             Solicitudes de Adopción
@@ -349,36 +348,35 @@ export default function ColaboradorPage() {
           <div className="max-h-[180px] overflow-y-auto mx-6">
             <table className="w-full table-fixed">
               <tbody className="divide-y divide-grisito">
-  {requests.length > 0 ? (
-    requests.map((r) => (
-      <tr key={r.id}>
-        <td className="px-4 py-2 text-left">{r.id}</td>
-        <td className="px-4 py-2 text-left">{r.userId}</td>
-        <td className="px-4 py-2 text-left">{r.petId}</td>
-        <td className="px-4 py-2 text-left">{r.aplicationState}</td>
-        <td className="px-4 py-2 text-left">
-          <Link
-            to={`/solisetting/${r.id}`}
-            className="inline-flex items-center text-negrito hover:text-moradito"
-          >
-            <Eye size={16} />
-            <span className="ml-1">Ver más</span>
-          </Link>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td
-        colSpan="5"
-        className="px-4 py-4 text-center text-grisito italic"
-      >
-        No hay solicitudes registradas.
-      </td>
-    </tr>
-  )}
-</tbody>
-
+                {requests.length > 0 ? (
+                  requests.map((r) => (
+                    <tr key={r.id}>
+                      <td className="px-4 py-2 text-left">{r.id}</td>
+                      <td className="px-4 py-2 text-left">{r.userName || r.userId}</td>
+                      <td className="px-4 py-2 text-left">{r.petName || r.petId}</td>
+                      <td className="px-4 py-2 text-left">{r.aplicationState}</td>
+                      <td className="px-4 py-2 text-left">
+                        <Link
+                          to={`/solisetting/${r.id}`}
+                          className="inline-flex items-center text-negrito hover:text-moradito"
+                        >
+                          <Eye size={16} />
+                          <span className="ml-1">Ver más</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="px-4 py-4 text-center text-grisito italic"
+                    >
+                      No hay solicitudes registradas.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
         </section>
