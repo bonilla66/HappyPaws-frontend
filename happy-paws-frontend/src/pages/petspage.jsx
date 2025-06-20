@@ -48,12 +48,12 @@ export default function PetsPage() {
   const canAddPet = user?.rol === "ADMIN" || user?.rol === "COLABORADOR";
 
   const statusOptions = [
+    { value: "", label: "Todos" },
     { value: "DISPONIBLE", label: "Disponibles" },
     { value: "ADOPTADO", label: "Adoptados" },
     { value: "VACCINATED", label: "Vacunados" },
     { value: "STERILIZED", label: "Esterilizados" },
     { value: "DEWORMED", label: "Desparasitados" },
-    { value: "", label: "Todos" },
   ];
 
   const [species, setSpecies] = useState([]);
@@ -328,7 +328,7 @@ export default function PetsPage() {
 
                 <button
                   onClick={() => {
-                    setStatusFilter("DISPONIBLE");
+                    setStatusFilter("");
                     setSearchTerm("");
                     setSelectedSpecie("");
                     setSelectedBreed("");
