@@ -126,7 +126,7 @@ export default function SolicitudSettingPage() {
       </button>
 
       <h2 className="text-2xl font-semibold text-negrito mb-6">
-        Detalle de solicitud #{solicitud.id}
+        Detalle de solicitud 
       </h2>
       
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -175,7 +175,6 @@ export default function SolicitudSettingPage() {
             <h3 className="text-lg font-medium text-negrito">Mascota solicitada</h3>
             <div className="bg-amarillito/10 p-3 rounded-lg">
               <p className="text-negrito font-medium">{solicitud.pet.name}</p>
-              <p className="text-sm text-grisito">ID: {solicitud.pet.id}</p>
             </div>
           </div>
           <div className="space-y-4">
