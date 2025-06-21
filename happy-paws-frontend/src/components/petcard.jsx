@@ -9,9 +9,10 @@ export default function PetCard({ id, image, name, description }) {
   const canEdit = user?.rol === 'ADMIN' || user?.rol === 'COLABORADOR'
 
   return (
-    <div className="relative flex bg-rosadito rounded-[24px] shadow-2xl max-w-md w-full h-52 mx-auto overflow-hidden">
+    <div className="relative flex bg-rosadito rounded-[24px] max-w-md w-full h-52 mx-auto overflow-hidden hover:-translate-y-1 + scale shadow-lg">
       {canEdit && (
         <button
+        aria-label="Editar mascota"
           onClick={() =>
             navigate('/editpet', {
               state: { id, image, name, description },
@@ -32,7 +33,7 @@ export default function PetCard({ id, image, name, description }) {
       </div>
 
       <div className="p-6 flex flex-col items-center text-center flex-1 overflow-hidden">
-        <h3 className="text-2xl font-bold text-negrito truncate">
+        <h3 className="text-2xl font-bold text-negrito truncate ">
           {name}
         </h3>
         <p className="text-sm text-negrito flex-1">
