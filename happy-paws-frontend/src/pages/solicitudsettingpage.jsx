@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Trash2, UserRound, ChevronLeft, Mail, Phone } from "lucide-react";
+import { Trash2, UserRound, ChevronLeft, Mail, Phone, PawPrint } from "lucide-react";
 import ClickPopup from "../components/clickpopup.jsx";
 import api from "../services/api";
 
@@ -59,7 +59,7 @@ export default function SolicitudSettingPage() {
           error.message || 
           "Error al cargar la solicitud"
         );
-        navigate("/colaborador", { replace: true });
+        navigate("/colaboradorpage", { replace: true });
       } finally {
         setLoading(false);
       }
@@ -173,8 +173,9 @@ export default function SolicitudSettingPage() {
           </div>
           <div className="space-y-3">
             <h3 className="text-lg font-medium text-negrito">Mascota solicitada</h3>
-            <div className="bg-amarillito/10 p-3 rounded-lg">
-              <p className="text-negrito font-medium">{solicitud.pet.name}</p>
+            <div className="flex items-center gap-2">
+            <PawPrint size={20} className="text-grisito"/>
+              <p className="text-negriito">{solicitud.pet.name}</p>
             </div>
           </div>
           <div className="space-y-4">
