@@ -122,7 +122,6 @@ export default function ColaboradorPage() {
 
   return (
     <div className="h-screen flex bg-amarillito overflow-hidden">
-      {/* Panel izquierdo perfil */}
       <div className="w-1/5 border-r border-grisito p-6 relative">
         <h1 className="text-xl font-light text-azulito mb-6">
           Información de mi perfil
@@ -255,14 +254,10 @@ export default function ColaboradorPage() {
           Cerrar sesión
         </button>
       </div>
-
-      {/* Panel derecho - Mascotas y Solicitudes */}
       <div className="w-4/5 p-6 space-y-6 overflow-auto">
         <h2 className="text-2xl font-semibold text-negrito mb-2 mt-0">
           Panel de Administración
         </h2>
-
-        {/* Sección Mascotas */}
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">Mascotas</h3>
           <table className="w-full table-fixed mb-2">
@@ -318,8 +313,6 @@ export default function ColaboradorPage() {
             </table>
           </div>
         </section>
-
-        {/* Sección Solicitudes */}
         <section>
           <h3 className="text-lg font-semibold text-negrito mb-1">
             Solicitudes de Adopción
