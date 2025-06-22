@@ -15,6 +15,8 @@ export default function EditPet() {
   const { state } = useLocation();
   const { id } = state || {};
   const { step, next, prev } = useWizard(5);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [form, setForm] = useState({
     photoURL: "",
@@ -195,6 +197,20 @@ export default function EditPet() {
     setShowModal(true);
   };
 
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await api.delete(`/pets/${id}`);
+      toast.success("Mascota eliminada exitosamente.");
+      navigate(-1);
+    } catch (error) {
+      console.error("Error al eliminar mascota:", error);
+      toast.error("No se pudo eliminar la mascota. Intenta nuevamente.");
+    }
+    setIsDeleting(false);
+    setShowDeleteModal(false);
+  };
+
   const closeModal = () => {
     setShowModal(false);
     if (modalType === "success") navigate(-1);
@@ -203,14 +219,13 @@ export default function EditPet() {
   const inputStyle =
     "mt-1 block w-full rounded-full border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-moradito focus:border-transparent transition";
 
-const faltanCampos =
-  !form.nombre ||
-  !form.edad ||
-  !form.gender ||
-  !form.shelterId ||
-  !form.speciesId ||
-  !form.raza;
-
+  const faltanCampos =
+    !form.nombre ||
+    !form.edad ||
+    !form.gender ||
+    !form.shelterId ||
+    !form.speciesId ||
+    !form.raza;
 
   const renderStep = () => {
     switch (step) {
@@ -803,9 +818,18 @@ const faltanCampos =
       style={{ backgroundImage: `url(${fondito})`, backgroundSize: "cover" }}
     >
       <div className="w-full max-w-5xl">
-        <h3 className="text-3xl font-semibold text-negrito text-center mb-6">
-          Editar mascota
-        </h3>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-3xl font-semibold text-negrito text-center w-full">
+            Editar mascota
+          </h3>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            title="Eliminar mascota"
+            className="ml-4 text-red-600 hover:text-red-800 transition"
+          >
+            <Trash2 className="w-6 h-6" />
+          </button>
+        </div>
 
         <form
           onSubmit={step === 5 ? handleSubmit : (e) => e.preventDefault()}
@@ -870,6 +894,14 @@ const faltanCampos =
             onClose={closeModal}
           />
         )}
+
+        <ConfirmDelete
+          visible={showDeleteModal}
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+          isLoading={isDeleting}
+          message="¿Estás seguro que deseas eliminar esta mascota?"
+        />
       </div>
     </div>
   );
