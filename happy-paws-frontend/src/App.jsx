@@ -49,7 +49,14 @@ export default function App() {
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactPage />} />
           <Route path="profilepage" element={<ProfilePage />} />
-          <Route path="editpet" element={<EditPetPage />} />
+          <Route
+            path="editpet"
+            element={
+              <RoleProtectedRoute allowedRoles={["ADMIN", "COLABORADOR"]}>
+                <EditPetPage />
+              </RoleProtectedRoute>
+            }
+          />
           <Route
             path="adminpage"
             element={
@@ -75,8 +82,22 @@ export default function App() {
               </RoleProtectedRoute>
             }
           />
-          <Route path="solisetting/:id" element={<SolicitudSettingPage />} />
-          <Route path="petsetting/:id" element={<PetSettingPage />} />
+          <Route
+            path="solisetting/:id"
+            element={
+              <RoleProtectedRoute allowedRoles={["ADMIN", "COLABORADOR"]}>
+                <SolicitudSettingPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="petsetting/:id"
+            element={
+              <RoleProtectedRoute allowedRoles={["ADMIN", "COLABORADOR"]}>
+                <PetSettingPage />
+              </RoleProtectedRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

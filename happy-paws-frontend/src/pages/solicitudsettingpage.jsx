@@ -74,7 +74,7 @@ export default function SolicitudSettingPage() {
     try {
       await api.delete(`/aplication/${id}`);
       toast.success("Solicitud eliminada con éxito");
-      navigate("/colaboradorpage");
+      navigate(-1);
     } catch (error) {
       console.error("Error al eliminar:", error);
       toast.error(
@@ -144,7 +144,7 @@ export default function SolicitudSettingPage() {
           </div>
           <button
             onClick={handleDeleteClick}
-            className="text-rojo hover:text-rojo/80 cursor-pointer"
+            className="text-red-500 hover:text-rojo/80 cursor-pointer"
             aria-label="Eliminar solicitud"
           >
             <Trash2 size={24} />

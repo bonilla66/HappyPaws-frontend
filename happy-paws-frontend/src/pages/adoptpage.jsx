@@ -25,6 +25,7 @@ export default function AdoptionFormPage() {
         setPet(petData);
       } catch (err) {
         setPetError("Error al cargar la información de la mascota.");
+        console.log(err);
       }
     };
 
@@ -73,6 +74,7 @@ export default function AdoptionFormPage() {
         message: "Error al enviar la solicitud.",
         type: "error",
       });
+      console.log(error);
     }
   };
 
@@ -106,7 +108,8 @@ export default function AdoptionFormPage() {
 
       <button
         onClick={() => navigate(-1)}
-        className="self-start mb-4 text-negrito cursor-pointer">
+        className="self-start mb-4 text-negrito cursor-pointer"
+      >
         <ArrowLeft size={24} />
       </button>
 
@@ -145,12 +148,10 @@ export default function AdoptionFormPage() {
           <div className="flex flex-col space-y-2">
             <label className="text-negrito">
               ¿Tiene otras mascotas en la actualidad?
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-center space-x-6">
-              {[
-                "sí",
-                "no"
-              ].map((opt) => (
+              {["sí", "no"].map((opt) => (
                 <label key={opt} className="inline-flex items-center space-x-2">
                   <input
                     type="radio"
@@ -158,7 +159,8 @@ export default function AdoptionFormPage() {
                     value={opt}
                     checked={values.hasOtherPets === opt}
                     onChange={handleChange}
-                    className="h-4 w-4 accent-black cursor-pointer" />
+                    className="h-4 w-4 accent-black cursor-pointer"
+                  />
                   <span className="text-grisito capitalize">{opt}</span>
                 </label>
               ))}
@@ -166,32 +168,36 @@ export default function AdoptionFormPage() {
           </div>
 
           <div className="flex flex-col space-y-2">
-            <label className="text-negrito">Ubicación</label>
+            <label className="text-negrito">
+              Ubicación<span className="text-red-500 ml-1">*</span>
+            </label>
             <input
               name="location"
               value={values.location}
               onChange={handleChange}
-              className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300" />
+              className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+            />
           </div>
 
           <div className="flex flex-col space-y-2">
-            <label className="text-negrito">Motivos para adoptarlo</label>
+            <label className="text-negrito">
+              Motivos para adoptarlo<span className="text-red-500 ml-1">*</span>
+            </label>
             <input
               name="reasons"
               value={values.reasons}
               onChange={handleChange}
-              className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300" />
+              className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
+            />
           </div>
 
           <div className="flex flex-col space-y-2">
             <label className="text-negrito">
               ¿Tiene espacio adecuado para la mascota?
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-center space-x-6">
-              {[
-                "sí",
-                "no"
-              ].map((opt) => (
+              {["sí", "no"].map((opt) => (
                 <label key={opt} className="inline-flex items-center space-x-2">
                   <input
                     type="radio"
@@ -199,7 +205,8 @@ export default function AdoptionFormPage() {
                     value={opt}
                     checked={values.hasSpace === opt}
                     onChange={handleChange}
-                    className="h-4 w-4 accent-black cursor-pointer" />
+                    className="h-4 w-4 accent-black cursor-pointer"
+                  />
                   <span className="text-grisito capitalize">{opt}</span>
                 </label>
               ))}
@@ -209,12 +216,10 @@ export default function AdoptionFormPage() {
           <div className="flex flex-col space-y-2">
             <label className="text-negrito">
               ¿Tiene tiempo suficiente para la mascota?
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="flex items-center space-x-6">
-              {[
-                "sí",
-                "no"
-              ].map((opt) => (
+              {["sí", "no"].map((opt) => (
                 <label key={opt} className="inline-flex items-center space-x-2">
                   <input
                     type="radio"
@@ -222,7 +227,8 @@ export default function AdoptionFormPage() {
                     value={opt}
                     checked={values.hasTime === opt}
                     onChange={handleChange}
-                    className="h-4 w-4 accent-black cursor-pointer" />
+                    className="h-4 w-4 accent-black cursor-pointer"
+                  />
                   <span className="text-grisito capitalize">{opt}</span>
                 </label>
               ))}
@@ -231,7 +237,8 @@ export default function AdoptionFormPage() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition">
+            className="w-full py-3 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
+          >
             Enviar Solicitud
           </button>
         </form>
