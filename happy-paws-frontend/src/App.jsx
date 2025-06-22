@@ -67,7 +67,14 @@ export default function App() {
             }
           />
           <Route path="addpetform" element={<AddPetForm />} />
-          <Route path="usersetting/:id" element={<UserSettingPage />} />
+          <Route
+            path="usersetting/:id"
+            element={
+              <RoleProtectedRoute allowedRoles={["ADMIN"]}>
+                <UserSettingPage />
+              </RoleProtectedRoute>
+            }
+          />
           <Route path="solisetting/:id" element={<SolicitudSettingPage />} />
           <Route path="petsetting/:id" element={<PetSettingPage />} />
           <Route
