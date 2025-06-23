@@ -80,7 +80,8 @@ export default function EditPet() {
       try {
         const { data: pet } = await api.get(`/pets/${id}`);
         setForm({
-          photoURL: pet.photoURL || "",
+           imageId: pet.imageId || null,
+            photoURL: pet.photoURL || "",
           nombre: pet.name || "",
           edad: pet.ageValue?.toString() || "",
           edadUnidad: pet.ageUnit || "",
@@ -162,14 +163,16 @@ export default function EditPet() {
       reviewDate: form.reviewDate,
       description: form.descripcion,
       history: form.llegada,
+       imageId: form.imageId || null, 
       photoURL: form.photoURL || null,
       shelterId: parseInt(form.shelterId),
       speciesId: parseInt(form.tipo),
       sizeId: parseInt(form.tamaño),
-      breedId: form.raza ? parseInt(form.raza) : undefined,
+      breedId: form.raza ? parseInt(form.raza) : null,
       petAttributeIds: form.petAttributeIds.map((id) => parseInt(id)),
     };
 
+   
     try {
       console.log("Payload a enviar:", payload);
       console.log("ID:", id);
@@ -243,26 +246,42 @@ export default function EditPet() {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
-                <label className="block text-sm font-semibold text-negrito mb-1">
-                  URL de la Foto{" "}
-                  <span className="text-red-600 font-bold">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="photoURL"
-                  value={form.photoURL}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                  className={inputStyle}
-                />
-                {form.photoURL && (
-                  <img
-                    src={form.photoURL}
-                    alt="preview"
-                    className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
-                  />
-                )}
-              </div>
+  <label className="block text-sm font-semibold text-negrito mb-1">
+    Nombre de la Foto <span className="text-red-600 font-bold">*</span>
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const { data } = await api.post("/image/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setForm((prev) => ({
+          ...prev,
+          photoURL: data.imgURL,
+          imageId: data.id,
+        }));
+        toast.success("Imagen subida con éxito");
+      } catch (error) {
+        toast.error("Error al subir imagen");
+        console.error(error);
+      }
+    }}
+  />
+  {form.photoURL && (
+    <img
+      src={form.photoURL}
+      alt="Imagen de la mascota"
+      className="w-32 h-32 mt-2 rounded-xl object-cover border border-gray-300 shadow"
+    />
+  )}
+</div>
+
 
               <div>
                 <label className="block text-sm font-semibold text-negrito mb-1">
