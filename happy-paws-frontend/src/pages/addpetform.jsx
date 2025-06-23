@@ -5,11 +5,14 @@ import useWizard from "../hooks/useWizard.js";
 import api from "../services/api.js";
 import { PawPrint, Ruler, Stethoscope, Eye, BookText } from "lucide-react";
 import fondito from "../assets/bannerHoriz.jpg";
+import { uploadImage } from "../services/ImageService";
+
 
 export default function AddPetForm() {
   const navigate = useNavigate();
   const { step, next, prev } = useWizard(5);
   const [form, setForm] = useState({
+    photoFile: null,
     photoURL: "",
     nombre: "",
     edad: "",
@@ -31,6 +34,7 @@ export default function AddPetForm() {
     history: "",
   });
 
+  const [imageData, setImageData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("success");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,6 +126,26 @@ export default function AddPetForm() {
 
     setIsSubmitting(true);
 
+let uploadResult = null;
+
+
+   if (form.photoFile) {
+      try {
+        uploadResult = await uploadImage(form.photoFile);
+        console.log("Imagen subida:", uploadResult);
+        setImageData(uploadResult);
+      } catch (err) {
+        console.error("Error al subir la imagen:", err);
+        setModalType("error");
+        setShowModal(true);
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+console.log("ID de imagen subida:", uploadResult?.id);
+
+
     const payload = {
       name: form.nombre,
       ageValue: parseInt(form.edad),
@@ -135,13 +159,18 @@ export default function AddPetForm() {
       reviewDate: form.reviewDate,
       description: form.descripcion,
       history: form.llegada,
-      photoURL: form.photoURL,
+ imageId: uploadResult?.id || null,  // <--- aquí pones el id guardado
       shelterId: parseInt(form.shelterId),
       speciesId: parseInt(form.tipo),
       sizeId: parseInt(form.tamaño),
       breedId: form.raza ? parseInt(form.raza) : null,
       petAttributeIds: form.petAttributeIds.map((id) => parseInt(id)),
     };
+
+
+console.log("Payload enviado:", payload);
+
+
 
     try {
       await api.post("/pets/register", payload);
@@ -218,24 +247,30 @@ export default function AddPetForm() {
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="block text-sm font-semibold text-negrito mb-1">
-                  URL de la Foto{" "}
+                  Nombre de la foto{" "}
                   <span className="text-red-600 font-bold">*</span>
                 </label>
-                <input
-                  type="text"
-                  name="photoURL"
-                  value={form.photoURL}
-                  onChange={handleChange}
-                  placeholder="https://..."
-                  className={inputStyle}
-                />
-                {form.photoURL && (
-                  <img
-                    src={form.photoURL}
-                    alt="preview"
-                    className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
-                  />
-                )}
+<input
+  type="file"
+  accept="image/*"
+  onChange={(e) =>
+    setForm((f) => ({
+      ...f,
+      photoFile: e.target.files[0],
+  
+    }))
+  }
+  className={inputStyle}
+/>
+{form.photoFile && (
+  <img
+    src={URL.createObjectURL(form.photoFile)}
+    alt="preview"
+    className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
+  
+/>
+)}
+
               </div>
 
               <div>
@@ -409,6 +444,9 @@ export default function AddPetForm() {
             </div>
           </>
         );
+
+
+
 
       case 3:
         return (
