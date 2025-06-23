@@ -126,10 +126,9 @@ export default function AddPetForm() {
 
     setIsSubmitting(true);
 
-let uploadResult = null;
+    let uploadResult = null;
 
-
-   if (form.photoFile) {
+    if (form.photoFile) {
       try {
         uploadResult = await uploadImage(form.photoFile);
         console.log("Imagen subida:", uploadResult);
@@ -142,9 +141,6 @@ let uploadResult = null;
         return;
       }
     }
-
-console.log("ID de imagen subida:", uploadResult?.id);
-
 
     const payload = {
       name: form.nombre,
@@ -159,18 +155,13 @@ console.log("ID de imagen subida:", uploadResult?.id);
       reviewDate: form.reviewDate,
       description: form.descripcion,
       history: form.llegada,
- imageId: uploadResult?.id || null,  // <--- aquí pones el id guardado
+      imageId: uploadResult?.id || null,  // <--- aquí pones el id guardado
       shelterId: parseInt(form.shelterId),
       speciesId: parseInt(form.tipo),
       sizeId: parseInt(form.tamaño),
       breedId: form.raza ? parseInt(form.raza) : null,
       petAttributeIds: form.petAttributeIds.map((id) => parseInt(id)),
     };
-
-
-console.log("Payload enviado:", payload);
-
-
 
     try {
       await api.post("/pets/register", payload);
@@ -206,11 +197,10 @@ console.log("Payload enviado:", payload);
         <div key={n} className="flex flex-col items-center">
           <div
             className={`w-9 h-9 flex items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-200
-            ${
-              n <= step
+            ${n <= step
                 ? "bg-moradito text-white border-moradito shadow-lg"
                 : "bg-white border-gray-300 text-gray-400"
-            }`}
+              }`}
           >
             {n}
           </div>
@@ -250,26 +240,26 @@ console.log("Payload enviado:", payload);
                   Nombre de la foto{" "}
                   <span className="text-red-600 font-bold">*</span>
                 </label>
-<input
-  type="file"
-  accept="image/*"
-  onChange={(e) =>
-    setForm((f) => ({
-      ...f,
-      photoFile: e.target.files[0],
-  
-    }))
-  }
-  className={inputStyle}
-/>
-{form.photoFile && (
-  <img
-    src={URL.createObjectURL(form.photoFile)}
-    alt="preview"
-    className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
-  
-/>
-)}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      photoFile: e.target.files[0],
+
+                    }))
+                  }
+                  className={inputStyle}
+                />
+                {form.photoFile && (
+                  <img
+                    src={URL.createObjectURL(form.photoFile)}
+                    alt="preview"
+                    className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
+
+                  />
+                )}
 
               </div>
 
@@ -593,8 +583,8 @@ console.log("Payload enviado:", payload);
                         const updated = isChecked
                           ? [...form.petAttributeIds, attr.id.toString()]
                           : form.petAttributeIds.filter(
-                              (id) => id !== attr.id.toString()
-                            );
+                            (id) => id !== attr.id.toString()
+                          );
                         setForm((prev) => ({
                           ...prev,
                           petAttributeIds: updated,
@@ -624,23 +614,22 @@ console.log("Payload enviado:", payload);
 
             <div className="flex bg-gradient-to-r from-pink-200 via-rosadito to-pink-100 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden border border-pink-300">
               <div className="bg-white p-4 flex items-center justify-center flex-shrink-0 w-52 h-52 m-4">
-<img
-  src={
-    imageData?.imgURL ||
-    (form.photoFile && URL.createObjectURL(form.photoFile)) ||
-    "https://dummyimage.com/150x150/cccccc/ffffff&text=Sin+imagen"
-  }
-  alt={form.nombre || "preview"}
-  className="w-full h-full object-cover rounded-xl"
-/>
+                <img
+                  src={
+                    imageData?.imgURL ||
+                    (form.photoFile && URL.createObjectURL(form.photoFile)) ||
+                    "https://dummyimage.com/150x150/cccccc/ffffff&text=Sin+imagen"
+                  }
+                  alt={form.nombre || "preview"}
+                  className="w-full h-full object-cover rounded-xl"
+                />
 
               </div>
 
               <div className="p-6 flex flex-col gap-4 text-sm text-gray-700 flex-1 overflow-hidden">
                 <h3
-                  className={`text-2xl font-extrabold ${
-                    !form.nombre ? "text-red-500" : "text-negrito"
-                  }`}
+                  className={`text-2xl font-extrabold ${!form.nombre ? "text-red-500" : "text-negrito"
+                    }`}
                 >
                   {form.nombre || "Nombre pendiente"}
                 </h3>
@@ -655,8 +644,8 @@ console.log("Payload enviado:", payload);
                       {form.edadUnidad === "AÑOS"
                         ? "año(s)"
                         : form.edadUnidad === "MESES"
-                        ? "mes(es)"
-                        : ""}
+                          ? "mes(es)"
+                          : ""}
                     </span>
                   </p>
                   <p>
@@ -849,11 +838,10 @@ console.log("Payload enviado:", payload);
                 type="submit"
                 disabled={isSubmitting}
                 className={`px-6 py-2 rounded-full font-medium shadow-md transition-all duration-200 cursor-pointer text-white
-      ${
-        isSubmitting
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-azulito hover:bg-sky-600"
-      }
+      ${isSubmitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-azulito hover:bg-sky-600"
+                  }
     `}
               >
                 {isSubmitting ? "Agregando mascota..." : "Crear mascota"}
