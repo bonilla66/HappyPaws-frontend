@@ -14,3 +14,12 @@ export const updateAplicationState = (id, newState) => {
 export const deleteAplication = (id) => {
   return api.delete(`/aplication/${id}`);
 };
+
+export const applyToPet = async (petId) => {
+  return await api.post(`/aplication/create?petId=${petId}`);
+};
+
+export const acceptSolicitud = async (solicitudId) => {
+  return await api.post(`/aplication/accept?solicitudId=${solicitudId}`);
+};
+

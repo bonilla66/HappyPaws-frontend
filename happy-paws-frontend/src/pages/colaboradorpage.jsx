@@ -9,6 +9,8 @@ import {
   IdCard,
   Eye,
   Search,
+  Menu,
+  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateUserProfile } from "../services/UserService";
@@ -19,8 +21,10 @@ export default function ColaboradorPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [editing, setEditing] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const [formValues, setFormValues] = useState({
     nombre: "",
@@ -69,8 +73,11 @@ export default function ColaboradorPage() {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -123,28 +130,41 @@ export default function ColaboradorPage() {
 
   return (
     <div
-      className="min-h-screen flex bg-gradient-to-br from-amarillito via-rosadito to-moradito overflow-hidden"
+      className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-amarillito via-rosadito to-moradito overflow-hidden"
       style={{ backgroundImage: `url(${fondito})` }}
     >
-      <aside className="w-1/5 bg-amarillito shadow-2xl border-r border-grisito p-6">
-        <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="lg:hidden fixed top-20 right-6 z-[100] bg-amarillito p-2 rounded-full shadow-lg border border-grisito"
+      >
+        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar - Responsive */}
+      <aside
+        ref={mobileMenuRef}
+        className={`w-full lg:w-1/5 bg-amarillito shadow-2xl border-r border-grisito p-6 fixed lg:static z-50 h-full transition-transform duration-300 ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <div className="relative" ref={dropdownRef}>
           <h1 className="text-xl font-light text-azulito mb-6">
             Información de mi perfil
           </h1>
 
           <button
-            onClick={() => setMenuOpen((prev) => !prev)}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
             className="absolute top-4 right-4 text-negrito hover:text-grisito"
           >
             <MoreHorizontal size={24} />
           </button>
 
-          {menuOpen && (
+          {dropdownOpen && (
             <div className="absolute top-12 right-2 bg-amarillito shadow-xl rounded-md z-50 w-48">
               <button
                 onClick={() => {
                   setEditing(true);
-                  setMenuOpen(false);
+                  setDropdownOpen(false);
                 }}
                 className="w-full text-left px-4 py-2 hover:bg-grisito text-sm text-negrito"
               >
@@ -153,7 +173,7 @@ export default function ColaboradorPage() {
               <button
                 onClick={() => {
                   navigate("/dashboard");
-                  setMenuOpen(false);
+                  setDropdownOpen(false);
                 }}
                 className="w-full text-left px-4 py-2 hover:bg-grisito text-sm text-negrito"
               >
@@ -163,19 +183,19 @@ export default function ColaboradorPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-4 mb-4 mt-6">
+        <div className="flex flex-col items-center md:items-start gap-4 mb-4 md:mb-6 mt-8">
           <UserRound size={80} className="text-negrito" />
-          <div>
+          <div className="text-center md:text-left">
             {editing ? (
               <input
                 type="text"
                 name="nombre"
                 value={formValues.nombre}
                 onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
+                className="w-full border-b border-grisito focus:outline-none bg-transparent text-center md:text-left"
               />
             ) : (
-              <h2 className="text-xl font-semibold text-negrito mb-1">
+              <h2 className="text-lg md:text-xl font-semibold text-negrito mb-1 break-words max-w-[200px] md:max-w-none">
                 {formValues.nombre}
               </h2>
             )}
@@ -183,88 +203,73 @@ export default function ColaboradorPage() {
           </div>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="space-y-4 mb-4 md:mb-4 text-center md:text-left">
+          <InfoField
+            icon={<Mail size={20} />}
+            label="Correo"
+            value={formValues.correo}
+            editing={editing}
+            onChange={handleChange}
+            name="correo"
+          />
+          <InfoField
+            icon={<Phone size={20} />}
+            label="Teléfono"
+            value={formValues.telefono}
+            editing={editing}
+            onChange={handleChange}
+            name="telefono"
+          />
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Mail size={20} className="text-grisito" />
-              <span className="text-grisito text-xl">Correo:</span>
-            </div>
-            {editing ? (
-              <input
-                type="email"
-                name="correo"
-                value={formValues.correo}
-                onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
-            ) : (
-              <p className="text-xl text-negrito">{formValues.correo}</p>
-            )}
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Phone size={20} className="text-grisito" />
-              <span className="text-grisito text-xl">Teléfono:</span>
-            </div>
-            {editing ? (
-              <input
-                type="text"
-                name="telefono"
-                value={formValues.telefono}
-                onChange={handleChange}
-                className="w-full border-b border-grisito focus:outline-none"
-              />
-            ) : (
-              <p className="text-xl text-negrito">{formValues.telefono}</p>
-            )}
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
               <IdCard size={20} className="text-grisito" />
-              <span className="text-grisito text-xl">DUI:</span>
+              <span className="text-grisito text-lg md:text-xl">DUI:</span>
             </div>
-            <p className="text-xl text-negrito opacity-70">{formValues.dui}</p>
+            <p className="text-lg md:text-xl text-negrito break-all max-w-[230px] md:max-w-none">
+              {formValues.dui}
+            </p>
           </div>
         </div>
 
         {editing && (
-          <>
+          <div className="flex flex-col sm:flex-row gap-2 mb-6 justify-center md:justify-start">
             <button
               onClick={handleSave}
-              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-purple-300 transition mr-4 cursor-pointer mb-4"
+              className="text-negrito border border-grisito rounded-full px-4 py-1 text-lg hover:bg-purple-300 transition"
             >
-              Guardar cambios
+              Guardar
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-red-200 transition cursor-pointer mb-4"
+              className="text-negrito border border-grisito rounded-full px-4 py-1 text-lg hover:bg-red-200 transition"
             >
               Cancelar
             </button>
-          </>
+          </div>
         )}
 
-        <button
-          onClick={async () => {
-            try {
-              await logout();
-              navigate("/");
-              toast.info("Sesión cerrada");
-            } catch (err) {
-              toast.error("Error al cerrar sesión");
-              console.error(err);
-            }
-          }}
-          className="text-lg ml-2 text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito cursor-pointer"
-        >
-          Cerrar sesión
-        </button>
+        <div className="flex justify-center md:justify-start">
+          <button
+            onClick={() => {
+              try {
+                logout();
+                navigate("/");
+                toast.info("Sesión cerrada");
+              } catch (err) {
+                toast.error("No se pudo cerrar sesión");
+                console.log(err);
+              }
+            }}
+            className="text-lg text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito w-full max-w-[200px]"
+          >
+            Cerrar sesión
+          </button>
+        </div>
       </aside>
 
-      <main className="w-4/5 p-8 space-y-8">
-        <h2 className="text-3xl font-bold text-negrito">
+      {/* Main Content - Responsive */}
+      <main className="w-full lg:w-4/5 p-4 lg:p-8 space-y-8 mt-16 lg:mt-0">
+        <h2 className="text-2xl lg:text-3xl font-bold text-negrito">
           Panel de administración
         </h2>
 
@@ -330,29 +335,30 @@ function DataSection({ title, columns, data }) {
   );
 
   return (
-    <section className="bg-amarillito shadow-lg rounded-xl p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-negrito">{title}</h3>
-        <div className="relative w-60">
+    <section className="bg-amarillito shadow-lg rounded-xl p-4 lg:p-6">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+        <h3 className="text-lg lg:text-xl font-semibold text-negrito">{title}</h3>
+        <div className="relative w-full lg:w-60">
           <input
             type="text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder="Buscar..."
-            className="pl-10 pr-3 py-1 rounded-full text-sm bg-blanquito text-negrito border border-grisito focus:outline-none focus:ring-2 focus:ring-rosadito"
+            className="pl-10 pr-3 py-1 rounded-full text-sm bg-blanquito text-negrito border border-grisito focus:outline-none focus:ring-2 focus:ring-rosadito w-full"
           />
           <Search className="absolute left-3 top-1.5 w-4 h-4 text-grisito" />
         </div>
       </div>
 
-      <div className="max-h-[220px] overflow-y-auto">
-        <table className="w-full table-fixed">
+      {/* Desktop Table */}
+      <div className="hidden lg:block max-h-[220px] overflow-y-auto">
+        <table className="w-full table-auto">
           <thead className="sticky top-0 bg-amarillito z-10">
             <tr>
               {columns.map((col, i) => (
                 <th
                   key={i}
-                  className="px-4 py-2 text-left text-grisito font-medium"
+                  className="px-4 py-2 text-left text-grisito font-medium whitespace-nowrap"
                 >
                   {col}
                 </th>
@@ -364,7 +370,10 @@ function DataSection({ title, columns, data }) {
               filteredData.map((row, idx) => (
                 <tr key={idx}>
                   {row.map((cell, i) => (
-                    <td key={i} className="px-4 py-2 text-left">
+                    <td
+                      key={i}
+                      className="px-4 py-2 text-left break-words max-w-[200px]"
+                    >
                       {cell}
                     </td>
                   ))}
@@ -383,13 +392,38 @@ function DataSection({ title, columns, data }) {
           </tbody>
         </table>
       </div>
+
+      {/* Mobile Cards */}
+      <div className="lg:hidden space-y-3">
+        {filteredData.length > 0 ? (
+          filteredData.map((row, idx) => (
+            <div
+              key={idx}
+              className="bg-blanquito p-4 rounded-lg shadow space-y-2"
+            >
+              {columns.map((col, i) => (
+                <div key={i} className="flex justify-between">
+                  <span className="text-grisito font-medium">{col}:</span>
+                  <span className="text-negrito text-right break-all">
+                    {row[i]}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-grisito italic py-4">
+            No hay resultados.
+          </div>
+        )}
+      </div>
     </section>
   );
 }
 
 function InfoField({ icon, label, value, editing, onChange, name }) {
   return (
-    <div>
+    <div className="w-full">
       <div className="flex items-center gap-2 mb-1">
         {icon}
         <span className="text-grisito text-xl">{label}:</span>
@@ -403,7 +437,9 @@ function InfoField({ icon, label, value, editing, onChange, name }) {
           className="w-full border-b border-grisito focus:outline-none bg-transparent"
         />
       ) : (
-        <p className="text-xl text-negrito">{value}</p>
+        <p className="text-xl text-negrito break-all overflow-hidden">
+          {value}
+        </p>
       )}
     </div>
   );

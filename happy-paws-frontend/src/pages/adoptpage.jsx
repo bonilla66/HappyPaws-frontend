@@ -71,7 +71,7 @@ export default function AdoptionFormPage() {
     } catch (error) {
       setPopup({
         show: true,
-        message: "Error al enviar la solicitud.",
+        message: "Error al enviar la solicitud, ya existe una solicitud para esa mascota.",
         type: "error",
       });
       console.log(error);
@@ -132,7 +132,7 @@ export default function AdoptionFormPage() {
               <div>
                 <p className="text-lg font-bold text-negrito">{pet.name}</p>
                 <p className="text-sm text-gray-600">
-                  {pet.breed?.name || "Raza desconocida"}
+                  {pet.breed || "Raza desconocida"}
                 </p>
               </div>
             </div>

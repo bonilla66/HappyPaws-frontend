@@ -25,7 +25,6 @@ export const register = async (userData) => {
             errors: data.errors
           };
         } else {
-          // Otro tipo de error 400
           throw {
             type: 'api',
             message: data.message || 'Bad request'
@@ -33,7 +32,6 @@ export const register = async (userData) => {
         }
       }
     }
-    // Error de red o servidor no disponible
     throw {
       type: 'network',
       message: 'Network error. Please check your connection.'

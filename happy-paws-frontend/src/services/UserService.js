@@ -13,7 +13,6 @@ export const updateUserProfile = async (id, data) => {
   }
 };
 
-
 export const getUserApplications = async () => {
   const res = await api.get("/aplication/by-user"); 
   return res.data;
