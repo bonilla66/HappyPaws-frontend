@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Fondito from "../assets/bannerHoriz.jpg";
@@ -8,9 +8,7 @@ import { register } from "../services/AuthService";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-
 export default function SignUpPage() {
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -22,6 +20,8 @@ export default function SignUpPage() {
     password: "",
     terms: false,
   };
+
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const validate = (vals) => {
     if (!vals.nombre || !vals.dui || !vals.telefono || !vals.email || !vals.password)
@@ -47,34 +47,29 @@ export default function SignUpPage() {
       navigate("/");
 
     } catch (error) {
-      console.error("Error en el registro:", error);
+  console.error("Error en el registro:", error);
+  setFieldErrors({});
 
-      if (error.response) {
-        const data = error.response.data;
+  if (error.response) {
+    const data = error.response.data;
 
-        if (data.errors && typeof data.errors === "object") {
-          const errores = Object.values(data.errors);
-          errores.forEach((msg) => toast.error(msg));
-        }
-
-        else if (typeof data.message === "string") {
-          toast.error(data.message);
-        }
-
-        else if (Array.isArray(data.message)) {
-          data.message.forEach((msg) => toast.error(msg));
-        }
-
-        else {
-          toast.error("Error inesperado: " + JSON.stringify(data));
-        }
-      } else if (error.request) {
-        toast.error("No se recibió respuesta del servidor.");
-      } else {
-        toast.error("Error al procesar la solicitud: " + error.message);
-      }
+    if (data.errors && typeof data.errors === "object") {
+      setFieldErrors(data.errors); // ✅ Mostrar errores debajo del input
+      toast.error("Errores de validación"); // ❗️General, opcional
+    } else if (typeof data.message === "string") {
+      toast.error(data.message);
+    } else if (Array.isArray(data.message)) {
+      data.message.forEach((msg) => toast.error(msg));
+    } else {
+      toast.error("Error inesperado: " + JSON.stringify(data));
     }
-  };
+  } else if (error.request) {
+    toast.error("No se recibió respuesta del servidor.");
+  } else {
+    toast.error("Error al procesar la solicitud: " + error.message);
+  }
+}
+}
 
   const { values, handleChange, handleSubmit } = UseForm(
     initialValues,
@@ -85,7 +80,8 @@ export default function SignUpPage() {
   return (
     <div
       className="min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${Fondito})` }}>
+      style={{ backgroundImage: `url(${Fondito})` }}
+    >
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="bg-amarillito backdrop-blur-sm max-w-6xl w-full rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row">
           <div className="md:w-1/2">
@@ -112,7 +108,9 @@ export default function SignUpPage() {
                   type="text"
                   className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
                 />
+                {fieldErrors.name && <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>}
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label className="mb-1 text-grisito">DUI</label>
@@ -123,7 +121,9 @@ export default function SignUpPage() {
                     type="text"
                     className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
                   />
+                  {fieldErrors.dui && <p className="text-red-500 text-sm mt-1">{fieldErrors.dui}</p>}
                 </div>
+
                 <div className="flex flex-col">
                   <label className="mb-1 text-grisito">Teléfono</label>
                   <input
@@ -133,8 +133,10 @@ export default function SignUpPage() {
                     type="text"
                     className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
                   />
+                  {fieldErrors.phone && <p className="text-red-500 text-sm mt-1">{fieldErrors.phone}</p>}
                 </div>
               </div>
+
               <div className="flex flex-col">
                 <label className="mb-1 text-grisito">Correo electrónico</label>
                 <input
@@ -144,7 +146,9 @@ export default function SignUpPage() {
                   type="email"
                   className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
                 />
+                {fieldErrors.email && <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>}
               </div>
+
               <div className="flex flex-col">
                 <label className="mb-1 text-grisito">Contraseña</label>
                 <input
@@ -154,7 +158,9 @@ export default function SignUpPage() {
                   type="password"
                   className="w-full h-8 px-4 border border-grisito rounded-full focus:outline-none focus:ring-1 focus:ring-purple-300"
                 />
+                {fieldErrors.password && <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>}
               </div>
+
               <label className="flex items-center space-x-2 text-sm">
                 <input
                   name="terms"
@@ -165,6 +171,7 @@ export default function SignUpPage() {
                 />
                 <span className="text-grisito">Acepto términos y condiciones</span>
               </label>
+
               <button
                 type="submit"
                 className="w-full py-4 bg-moradito text-negrito rounded-full font-medium hover:bg-purple-300 transition"
@@ -172,6 +179,7 @@ export default function SignUpPage() {
                 Crear cuenta
               </button>
             </form>
+
             <p className="text-center text-sm text-negrito">
               ¿Ya tienes cuenta?{" "}
               <Link to="/login" className="text-azulito font-medium hover:underline">
