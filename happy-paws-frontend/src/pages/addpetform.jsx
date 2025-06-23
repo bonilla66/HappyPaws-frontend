@@ -624,11 +624,16 @@ console.log("Payload enviado:", payload);
 
             <div className="flex bg-gradient-to-r from-pink-200 via-rosadito to-pink-100 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden border border-pink-300">
               <div className="bg-white p-4 flex items-center justify-center flex-shrink-0 w-52 h-52 m-4">
-                <img
-                  src={form.photoURL || "https://via.placeholder.com/150"}
-                  alt={form.nombre || "preview"}
-                  className="w-full h-full object-cover rounded-xl"
-                />
+<img
+  src={
+    imageData?.imgURL ||
+    (form.photoFile && URL.createObjectURL(form.photoFile)) ||
+    "https://dummyimage.com/150x150/cccccc/ffffff&text=Sin+imagen"
+  }
+  alt={form.nombre || "preview"}
+  className="w-full h-full object-cover rounded-xl"
+/>
+
               </div>
 
               <div className="p-6 flex flex-col gap-4 text-sm text-gray-700 flex-1 overflow-hidden">
