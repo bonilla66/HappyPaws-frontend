@@ -8,8 +8,6 @@ import {
   Phone,
   IdCard,
   Search,
-  Menu,
-  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { updateUserProfile } from "../services/UserService";
@@ -22,7 +20,7 @@ import fondito from "../assets/bannerHoriz.jpg";
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const { user, logout } = useAuth();
 
   const [formValues, setFormValues] = useState({
@@ -51,6 +49,7 @@ export default function ProfilePage() {
         } catch (error) {
           console.error("Error al cargar solicitudes:", error);
           toast.error("Error al cargar tus solicitudes");
+          
         }
       };
 
@@ -106,20 +105,10 @@ export default function ProfilePage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-amarillito via-rosadito to-moradito overflow-hidden"
+      className="min-h-screen flex bg-gradient-to-br from-amarillito via-rosadito to-moradito overflow-hidden"
       style={{ backgroundImage: `url(${fondito})` }}
     >
-     <button
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-20 right-6 z-[100] bg-amarillito p-2 rounded-full shadow-lg border border-grisito"
-      >
-        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-      <aside
-        className={`w-full lg:w-1/5 bg-amarillito shadow-2xl border-r border-grisito p-6 fixed lg:static z-40 h-full transition-transform duration-300 ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
-      >
+      <aside className="w-1/5 bg-amarillito shadow-2xl border-r border-grisito p-6">
         <h1 className="text-xl font-light text-azulito mb-6">
           Información de mi perfil
         </h1>
@@ -135,7 +124,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="flex items-center gap-4 mb-6 mt-8">
-          <UserRound size={60} className="text-negrito" />
+          <UserRound size={80} className="text-negrito" />
           <div>
             {editing ? (
               <input
@@ -146,7 +135,7 @@ export default function ProfilePage() {
                 className="w-full border-b border-grisito focus:outline-none bg-transparent"
               />
             ) : (
-              <h2 className="text-xl font-semibold text-negrito mb-1 truncate">
+              <h2 className="text-xl font-semibold text-negrito mb-1">
                 {formValues.nombre}
               </h2>
             )}
@@ -176,23 +165,21 @@ export default function ProfilePage() {
               <IdCard size={20} className="text-grisito" />
               <span className="text-grisito text-xl">DUI:</span>
             </div>
-            <p className="text-xl text-negrito opacity-90 break-all">
-              {formValues.dui}
-            </p>
+            <p className="text-xl text-negrito opacity-90">{formValues.dui}</p>
           </div>
         </div>
 
         {editing && (
-          <div className="flex gap-2 mb-6 flex-wrap">
+          <div className="flex gap-2 mb-6">
             <button
               onClick={handleSave}
-              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-purple-300 transition flex-1 min-w-[120px]"
+              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-purple-300 transition"
             >
               Guardar
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-red-200 transition flex-1 min-w-[120px]"
+              className="text-negrito border border-grisito rounded-full px-4 py-1 text-xl hover:bg-red-200 transition"
             >
               Cancelar
             </button>
@@ -210,16 +197,16 @@ export default function ProfilePage() {
               console.log(err);
             }
           }}
-          className="text-lg text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito w-full lg:w-auto"
+          className="text-lg text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito"
         >
           Cerrar sesión
         </button>
       </aside>
-      <main className="w-full lg:w-4/5 p-4 lg:p-8 space-y-8 mt-16 lg:mt-0">
-        <h2 className="text-2xl lg:text-3xl font-bold text-negrito">
+      <main className="w-4/5 p-8 space-y-8">
+        <h2 className="text-3xl font-bold text-negrito">
           Mis datos
         </h2>
-        <div className="flex-1 space-y-6 px-2 lg:px-6">
+        <div className="flex-1 space-y-6 px-6">
           <DataSection
             title="Solicitudes"
             columns={["Mascota", "Fecha emitida", "Estado", "Sexo", "Tipo"]}
@@ -228,7 +215,7 @@ export default function ProfilePage() {
               row.aplicationDate,
               row.state,
               row.gender,
-              row.specie,
+              row.species,
             ])}
           />
 
@@ -270,30 +257,29 @@ function DataSection({ title, columns, data }) {
   );
 
   return (
-    <section className="bg-amarillito shadow-lg rounded-xl p-4 lg:p-6">
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
-        <h3 className="text-lg lg:text-xl font-semibold text-negrito">
-          {title}
-        </h3>
-        <div className="relative w-full lg:w-60">
+    <section className="bg-amarillito shadow-lg rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-semibold text-negrito">{title}</h3>
+        <div className="relative w-60">
           <input
             type="text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder="Buscar..."
-            className="pl-10 pr-3 py-1 rounded-full text-sm bg-blanquito text-negrito border border-grisito focus:outline-none focus:ring-2 focus:ring-rosadito w-full"
+            className="pl-10 pr-3 py-1 rounded-full text-sm bg-blanquito text-negrito border border-grisito focus:outline-none focus:ring-2 focus:ring-rosadito"
           />
           <Search className="absolute left-3 top-1.5 w-4 h-4 text-grisito" />
         </div>
       </div>
-      <div className="hidden lg:block max-h-[220px] overflow-y-auto">
-        <table className="w-full table-auto">
+
+      <div className="max-h-[220px] overflow-y-auto">
+        <table className="w-full table-fixed">
           <thead className="sticky top-0 bg-amarillito z-10">
             <tr>
               {columns.map((col, i) => (
                 <th
                   key={i}
-                  className="px-4 py-2 text-left text-grisito font-medium whitespace-nowrap"
+                  className="px-4 py-2 text-left text-grisito font-medium"
                 >
                   {col}
                 </th>
@@ -305,10 +291,7 @@ function DataSection({ title, columns, data }) {
               filteredData.map((row, idx) => (
                 <tr key={idx}>
                   {row.map((cell, i) => (
-                    <td
-                      key={i}
-                      className="px-4 py-2 text-left break-words max-w-[200px]"
-                    >
+                    <td key={i} className="px-4 py-2 text-left">
                       {cell}
                     </td>
                   ))}
@@ -327,36 +310,13 @@ function DataSection({ title, columns, data }) {
           </tbody>
         </table>
       </div>
-      <div className="lg:hidden space-y-3">
-        {filteredData.length > 0 ? (
-          filteredData.map((row, idx) => (
-            <div
-              key={idx}
-              className="bg-blanquito p-4 rounded-lg shadow space-y-2"
-            >
-              {columns.map((col, i) => (
-                <div key={i} className="flex justify-between">
-                  <span className="text-grisito font-medium">{col}:</span>
-                  <span className="text-negrito text-right break-all">
-                    {row[i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ))
-        ) : (
-          <div className="text-center text-grisito italic py-4">
-            No hay resultados.
-          </div>
-        )}
-      </div>
     </section>
   );
 }
 
 function InfoField({ icon, label, value, editing, onChange, name }) {
   return (
-    <div className="w-full">
+    <div>
       <div className="flex items-center gap-2 mb-1">
         {icon}
         <span className="text-grisito text-xl">{label}:</span>
@@ -367,12 +327,10 @@ function InfoField({ icon, label, value, editing, onChange, name }) {
           name={name}
           value={value}
           onChange={onChange}
-          className="w-full border-b border-grisito focus:outline-none bg-transparent"
+          className="w-full border-b border-grisito focus:outline-none bg-transparent "
         />
       ) : (
-        <p className="text-xl text-negrito break-all overflow-hidden">
-          {value}
-        </p>
+        <p className="text-xl text-negrito break-all overflow-hidden">{value}</p>
       )}
     </div>
   );

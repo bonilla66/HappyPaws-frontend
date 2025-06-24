@@ -54,8 +54,8 @@ export default function SignUpPage() {
     const data = error.response.data;
 
     if (data.errors && typeof data.errors === "object") {
-      setFieldErrors(data.errors); // ✅ Mostrar errores debajo del input
-      toast.error("Errores de validación"); // ❗️General, opcional
+      setFieldErrors(data.errors); 
+      toast.error("Errores de validación"); 
     } else if (typeof data.message === "string") {
       toast.error(data.message);
     } else if (Array.isArray(data.message)) {
