@@ -197,7 +197,7 @@ export default function ProfilePage() {
               console.log(err);
             }
           }}
-          className="text-lg text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito"
+          className="text-negrito border border-grisito rounded-full px-4 py-1 text-lg hover:bg-red-200 transition"
         >
           Cerrar sesión
         </button>

@@ -18,13 +18,13 @@ export default function AboutUs() {
               donde ser felices y amados.
             </p>
             <p className="text-grisito leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit imperdiet,
-              orci curabitur aenean dis ultricies urna litora, ut parturient
-              quam duis maecenas cum erat. Egestas inceptos rhoncus elementum
-              convallis nisl non phasellus orci condimentum, class ac laoreet
-              porta eros urna cursus nec. At ullamcorper consequat ad hendrerit
-              conubia vel convallis imperdiet, massa venenatis fames enim sed
-              tempor metus.
+             En Happy Paws, creemos que cada mascota merece un hogar lleno de amor y que cada persona merece
+              la alegría de compartir su vida con un compañero peludo. Somos una comunidad apasionada que conecta 
+              a animales rescatados con familias dispuestas a darles una segunda oportunidad.
+
+              Nuestra plataforma nació para simplificar el proceso de adopción, haciendo que sea seguro, transparente y 
+              emocionante. Trabajamos mano a mano con refugios, protectoras y adoptantes para garantizar que cada historia 
+              tenga un final feliz.
             </p>
           </div>
           <div className="flex-1">
@@ -38,13 +38,13 @@ export default function AboutUs() {
           <div className="flex-1 space-y-4 text-center lg:text-right">
             <h2 className="text-3xl font-semibold text-azulito">Nuestra Misión</h2>
             <p className="text-grisito leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit
-              imperdiet, orci curabitur aenean dis ultricies urna litora, ut
-              parturient quam duis maecenas cum erat. Egestas inceptos rhoncus
-              elementum convallis nisl non phasellus orci condimentum, class ac
-              laoreet porta eros urna cursus nec. At ullamcorper consequat ad
-              hendrerit conubia vel convallis imperdiet, massa venenatis fames
-              enim sed tempor metus.
+             Conectar, educar y salvar vidas.
+              Facilitamos el encuentro entre mascotas y adoptantes mediante un sistema intuitivo y 
+              lleno de empatía.
+              Promovemos la tenencia responsable con recursos, consejos y seguimiento post-adopción.
+              Cada adopción en Happy Paws es un paso hacia un mundo sin abandono animal.
+
+              ¡Porque las patitas felices cambian el mundo!.
             </p>
           </div>
           <div className="flex-1">

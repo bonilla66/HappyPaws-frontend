@@ -7,7 +7,6 @@ import { PawPrint, Ruler, Stethoscope, Eye, BookText } from "lucide-react";
 import fondito from "../assets/bannerHoriz.jpg";
 import { uploadImage } from "../services/ImageService";
 
-
 export default function AddPetForm() {
   const navigate = useNavigate();
   const { step, next, prev } = useWizard(5);
@@ -155,7 +154,7 @@ export default function AddPetForm() {
       reviewDate: form.reviewDate,
       description: form.descripcion,
       history: form.llegada,
-      imageId: uploadResult?.id || null,  // <--- aquí pones el id guardado
+      imageId: uploadResult?.id || null,
       shelterId: parseInt(form.shelterId),
       speciesId: parseInt(form.tipo),
       sizeId: parseInt(form.tamaño),
@@ -192,7 +191,7 @@ export default function AddPetForm() {
   ];
 
   const StepIndicator = () => (
-    <div className="flex justify-center gap-8 mb-6">
+    <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6">
       {[1, 2, 3, 4, 5].map((n) => (
         <div key={n} className="flex flex-col items-center">
           <div
@@ -204,7 +203,7 @@ export default function AddPetForm() {
           >
             {n}
           </div>
-          <span className="text-xs text-center mt-1 w-24 text-negrito">
+          <span className="text-xs text-center mt-1 w-20 sm:w-24 text-negrito">
             {stepLabels[n - 1]}
           </span>
         </div>
@@ -225,7 +224,7 @@ export default function AddPetForm() {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
               <h4 className="text-lg font-bold text-moradito flex items-center gap-2">
                 <PawPrint className="w-5 h-5" /> Datos generales
               </h4>
@@ -234,10 +233,10 @@ export default function AddPetForm() {
                 <span className="text-red-600 font-bold text-m">*</span>
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-negrito mb-1">
-                  Nombre de la foto{" "}
+                  Foto de la mascota{" "}
                   <span className="text-red-600 font-bold">*</span>
                 </label>
                 <input
@@ -247,7 +246,6 @@ export default function AddPetForm() {
                     setForm((f) => ({
                       ...f,
                       photoFile: e.target.files[0],
-
                     }))
                   }
                   className={inputStyle}
@@ -257,15 +255,13 @@ export default function AddPetForm() {
                     src={URL.createObjectURL(form.photoFile)}
                     alt="preview"
                     className="w-32 h-32 mt-4 rounded-xl object-cover border border-grisito shadow"
-
                   />
                 )}
-
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-negrito mb-1">
-                  Nombre de la mascota{" "}
+                  Nombre{" "}
                   <span className="text-red-600 font-bold">*</span>
                 </label>
                 <input
@@ -276,8 +272,9 @@ export default function AddPetForm() {
                   className={inputStyle}
                 />
               </div>
-              <div className="flex gap-4">
-                <div className="w-1/2">
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-1/2">
                   <label className="block text-sm font-semibold text-negrito mb-1">
                     Edad <span className="text-red-600 font-bold">*</span>
                   </label>
@@ -289,7 +286,7 @@ export default function AddPetForm() {
                     className={inputStyle}
                   />
                 </div>
-                <div className="w-1/2">
+                <div className="w-full sm:w-1/2">
                   <label className="block text-sm font-semibold text-negrito mb-1">
                     Unidad <span className="text-red-600 font-bold">*</span>
                   </label>
@@ -328,7 +325,7 @@ export default function AddPetForm() {
 
               <div>
                 <label className="block text-sm font-semibold text-negrito mb-1">
-                  Peso aproximado (kg){" "}
+                  Peso (kg){" "}
                   <span className="text-red-600 font-bold">*</span>
                 </label>
                 <input
@@ -346,7 +343,7 @@ export default function AddPetForm() {
       case 2:
         return (
           <>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
               <h4 className="text-lg font-bold text-moradito flex items-center gap-2">
                 <Ruler className="w-5 h-5" /> Características físicas
               </h4>
@@ -356,7 +353,7 @@ export default function AddPetForm() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-negrito">
                   Especie <span className="text-red-600 font-bold">*</span>
@@ -394,7 +391,7 @@ export default function AddPetForm() {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-semibold text-negrito">
                   Sexo <span className="text-red-600 font-bold">*</span>
@@ -435,13 +432,10 @@ export default function AddPetForm() {
           </>
         );
 
-
-
-
       case 3:
         return (
           <>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
               <h4 className="text-lg font-bold text-moradito flex items-center gap-2">
                 <Stethoscope className="w-5 h-5" /> Información médica
               </h4>
@@ -451,7 +445,7 @@ export default function AddPetForm() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-negrito">
                   Fecha de ingreso{" "}
@@ -481,10 +475,10 @@ export default function AddPetForm() {
             </div>
             <div className="mt-6">
               <p className="text-sm text-gray-600 italic mb-2">
-                Marca solo las casillas que apliquen para esta mascota:
+                Marca solo las casillas que apliquen:
               </p>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <label className="inline-flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -519,7 +513,7 @@ export default function AddPetForm() {
       case 4:
         return (
           <>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
               <h4 className="text-lg font-bold text-moradito flex items-center gap-2">
                 <BookText className="w-5 h-5" /> Historia y atributos
               </h4>
@@ -541,7 +535,7 @@ export default function AddPetForm() {
                 className="mt-1 block w-full rounded-2xl border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-moradito focus:border-transparent transition"
               />
             </div>
-            <div>
+            <div className="mt-4">
               <label className="block text-sm font-semibold text-negrito">
                 Historia de llegada{" "}
                 <span className="text-red-600 font-bold">*</span>
@@ -612,8 +606,8 @@ export default function AddPetForm() {
               </p>
             )}
 
-            <div className="flex bg-gradient-to-r from-pink-200 via-rosadito to-pink-100 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden border border-pink-300">
-              <div className="bg-white p-4 flex items-center justify-center flex-shrink-0 w-52 h-52 m-4">
+            <div className="flex flex-col md:flex-row bg-gradient-to-r from-pink-200 via-rosadito to-pink-100 rounded-3xl shadow-2xl w-full overflow-hidden border border-pink-300">
+              <div className="bg-white p-4 flex items-center justify-center w-full md:w-52 h-52 md:h-auto m-4 md:m-0 md:my-4 md:ml-4">
                 <img
                   src={
                     imageData?.imgURL ||
@@ -623,18 +617,17 @@ export default function AddPetForm() {
                   alt={form.nombre || "preview"}
                   className="w-full h-full object-cover rounded-xl"
                 />
-
               </div>
 
-              <div className="p-6 flex flex-col gap-4 text-sm text-gray-700 flex-1 overflow-hidden">
+              <div className="p-4 md:p-6 flex flex-col gap-3 md:gap-4 text-sm text-gray-700 flex-1 overflow-hidden">
                 <h3
-                  className={`text-2xl font-extrabold ${!form.nombre ? "text-red-500" : "text-negrito"
+                  className={`text-xl md:text-2xl font-extrabold ${!form.nombre ? "text-red-500" : "text-negrito"
                     }`}
                 >
                   {form.nombre || "Nombre pendiente"}
                 </h3>
 
-                <div className="grid grid-cols-2 gap-x-6 gap-y-2 border-b border-gray-300 pb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 border-b border-gray-300 pb-4">
                   <p>
                     <strong>Edad:</strong>{" "}
                     <span
@@ -716,7 +709,7 @@ export default function AddPetForm() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 border-b border-gray-300 pb-4 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-300 pb-4 pt-2">
                   <p>
                     <strong>Esterilizado:</strong>{" "}
                     {form.esterilizado ? "✅ Sí" : "❌ No"}
@@ -793,24 +786,24 @@ export default function AddPetForm() {
       className="w-full min-h-screen bg-amarillito flex items-center justify-center px-4 py-10"
       style={{ backgroundImage: `url(${fondito})`, backgroundSize: "cover" }}
     >
-      <div className="w-full max-w-5xl">
-        <h3 className="text-3xl font-semibold text-negrito text-center mb-6">
+      <div className="w-full max-w-5xl mx-4">
+        <h3 className="text-2xl sm:text-3xl font-semibold text-negrito text-center mb-6">
           Formulario de la mascota
         </h3>
 
         <form
           onSubmit={step === 5 ? handleSubmit : (e) => e.preventDefault()}
-          className="bg-white rounded-3xl p-10 space-y-10 shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all"
+          className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 space-y-8 md:space-y-10 shadow-[0_10px_25px_rgba(0,0,0,0.1)] transition-all"
         >
           <StepIndicator />
           {renderStep()}
 
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row justify-between gap-4">
             {step > 1 && (
               <button
                 type="button"
                 onClick={prev}
-                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-gray-200 hover:bg-gray-300"
+                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-gray-200 hover:bg-gray-300 order-2 sm:order-1"
               >
                 Atrás
               </button>
@@ -819,7 +812,7 @@ export default function AddPetForm() {
               <button
                 type="button"
                 onClick={next}
-                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-gray-200 hover:bg-gray-300"
+                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-gray-200 hover:bg-gray-300 order-1 sm:order-2"
               >
                 Siguiente
               </button>
@@ -828,7 +821,7 @@ export default function AddPetForm() {
               <button
                 type="button"
                 onClick={next}
-                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-moradito text-white hover:bg-purple-300"
+                className="px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer bg-moradito text-white hover:bg-purple-300 order-1 sm:order-2"
               >
                 Visualizar mascota
               </button>
@@ -838,11 +831,10 @@ export default function AddPetForm() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`px-6 py-2 rounded-full font-medium shadow-md transition-all duration-200 cursor-pointer text-white
-      ${isSubmitting
+                  ${isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-azulito hover:bg-sky-600"
-                  }
-    `}
+                  } order-1 sm:order-2 w-full sm:w-auto`}
               >
                 {isSubmitting ? "Agregando mascota..." : "Crear mascota"}
               </button>

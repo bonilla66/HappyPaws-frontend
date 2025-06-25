@@ -139,8 +139,6 @@ export default function ColaboradorPage() {
       >
         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
-
-      {/* Sidebar - Responsive */}
       <aside
         ref={mobileMenuRef}
         className={`w-full lg:w-1/5 bg-amarillito shadow-2xl border-r border-grisito p-6 fixed lg:static z-50 h-full transition-transform duration-300 ${
@@ -260,14 +258,12 @@ export default function ColaboradorPage() {
                 console.log(err);
               }
             }}
-            className="text-lg text-negrito border border-grisito rounded-full px-4 py-1 hover:bg-grisito w-full max-w-[200px]"
+            className="text-negrito border border-grisito rounded-full px-4 py-1 text-lg hover:bg-red-200 transition"
           >
             Cerrar sesión
           </button>
         </div>
       </aside>
-
-      {/* Main Content - Responsive */}
       <main className="w-full lg:w-4/5 p-4 lg:p-8 space-y-8 mt-16 lg:mt-0">
         <h2 className="text-2xl lg:text-3xl font-bold text-negrito">
           Panel de administración
@@ -349,8 +345,6 @@ function DataSection({ title, columns, data }) {
           <Search className="absolute left-3 top-1.5 w-4 h-4 text-grisito" />
         </div>
       </div>
-
-      {/* Desktop Table */}
       <div className="hidden lg:block max-h-[220px] overflow-y-auto">
         <table className="w-full table-auto">
           <thead className="sticky top-0 bg-amarillito z-10">
@@ -392,8 +386,6 @@ function DataSection({ title, columns, data }) {
           </tbody>
         </table>
       </div>
-
-      {/* Mobile Cards */}
       <div className="lg:hidden space-y-3">
         {filteredData.length > 0 ? (
           filteredData.map((row, idx) => (

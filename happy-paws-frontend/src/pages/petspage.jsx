@@ -236,8 +236,6 @@ export default function PetsPage() {
               <ListFilter size={18} />
               <span>Filtros</span>
             </button>
-            
-            {/* Menú desplegable de filtros */}
             {filtersOpen && (
               <div
                 ref={filterRef}
