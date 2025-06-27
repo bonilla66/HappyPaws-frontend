@@ -17,9 +17,6 @@ export const register = async (userData) => {
   }
 };
 
-
-
-
 export const logout = async () => {
   return await api.post(`${AUTH_URL}/logout`);
 };
