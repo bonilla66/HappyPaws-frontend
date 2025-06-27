@@ -13,11 +13,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      try {
-        await axios.get('https://happypaws-backend-latest.onrender.com/auth/refresh', {
-          withCredentials: true
-        });
-
+        try {
+        await api.get('/auth/refresh'); 
         return api(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);
