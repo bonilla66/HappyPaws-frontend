@@ -22,6 +22,7 @@ export function AuthProvider({ children }) {
     await logoutService();
     setUser(null);
     setIsAuthenticated(false);
+    
   }
 
   const checkSession = async () => {
