@@ -11,7 +11,7 @@
     } from "lucide-react";
     import ClickPopup from "../components/clickpopup.jsx";
     import api from "../services/api";
-    import { useAuth } from "../context/AuthContext"; 
+    import { useAuth } from "../context/AuthContext.jsx"; 
     export default function SolicitudSettingPage() {
       const navigate = useNavigate();
       const { id } = useParams();
