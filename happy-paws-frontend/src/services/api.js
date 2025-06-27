@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'https://happypaws-backend-latest.onrender.com',
   withCredentials: true
 });
 
@@ -14,7 +14,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.get('http://localhost:8080/auth/refresh', {
+        await axios.get('https://happypaws-backend-latest.onrender.com/auth/refresh', {
           withCredentials: true
         });
 

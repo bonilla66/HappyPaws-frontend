@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const submitApplication = async (data, token) => {
-  return await axios.post("http://localhost:8080/aplication/create", data, {
+  return await axios.post("https://happypaws-backend-latest.onrender.com/aplication/create", data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
