@@ -1,6 +1,6 @@
 import api from "./api";
 
-const AUTH_URL = "https://happypaws-backend-latest.onrender.com/aplication/create/auth";
+const AUTH_URL = "/auth";
 
 export const login = async (credentials) => {
    await api.post(`${AUTH_URL}/login`, credentials);
