@@ -14,7 +14,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.get('https://happypaws-backend-latest.onrender.com/auth/refresh', {
+        await api.get('https://happypaws-backend-latest.onrender.com/auth/refresh', {
           withCredentials: true
         });
 
