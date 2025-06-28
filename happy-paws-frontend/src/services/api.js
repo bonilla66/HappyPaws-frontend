@@ -10,7 +10,9 @@ api.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const cookies = document.cookie;
+
+    if (error.response?.status === 401 && !originalRequest._retry && cookies.includes("refresh_token")) {
       originalRequest._retry = true;
 
       try {
