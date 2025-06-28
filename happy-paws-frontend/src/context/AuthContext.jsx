@@ -41,10 +41,16 @@ export function AuthProvider({ children }) {
   }
 };
 
-
    useEffect(() => {
+  const cookies = document.cookie;
+  if (cookies.includes("refresh_token")) {
     checkSession();
-  }, []);
+  } else {
+    console.log("No hay refresh_token → Usuario visitante.");
+    setLoading(false);
+  }
+}, []);
+
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, loading, user }}>
