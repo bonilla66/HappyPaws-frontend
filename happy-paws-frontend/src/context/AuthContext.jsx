@@ -23,24 +23,16 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
-  const checkSession = async () => {
-    try {
-      await api.get("/auth/refresh");
-      const res = await api.get("/auth/me");
-      setUser(res.data);
-      setIsAuthenticated(true);
-    } catch (err) {
-      console.error("Error al verificar sesión:", err);
-      setIsAuthenticated(false);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+   useEffect(() => {
+  const cookies = document.cookie;
+  if (cookies.includes("refresh_token")) {
     checkSession();
-  }, []);
+  } else {
+    console.log("No hay refresh_token → Usuario visitante.");
+    setLoading(false);
+  }
+}, []);
+
 
   return (
     <AuthContext.Provider
