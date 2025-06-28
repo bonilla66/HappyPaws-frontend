@@ -5,49 +5,54 @@ import api from "../services/api";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
-  const [isAuthenticated,setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const login =  async (credentials) => {
-  await loginService(credentials);
-  const res = await api.get("/auth/me");
-  setUser(res.data); 
-  setIsAuthenticated(true);
-  return res.data;
-  }; 
-
-  const logout = async() => {
-    await logoutService();
-    setUser(null);
-    setIsAuthenticated(false);
-    
-  }
-
-  const checkSession = async () => {
-  try {
-    await api.get("/auth/refresh");
+  const login = async (credentials) => {
+    await loginService(credentials);
     const res = await api.get("/auth/me");
     setUser(res.data);
     setIsAuthenticated(true);
-    console.log(user);
-  } catch (err) {
-    console.error("Error al verificar sesión:", err);
-    setIsAuthenticated(false);
+    return res.data;
+  };
+
+  const logout = async () => {
+    await logoutService();
     setUser(null);
-  } finally {
-    setLoading(false);
-  }
-};
+    setIsAuthenticated(false);
+  };
 
+  const checkSession = async () => {
+    try {
+      await api.get("/auth/refresh");
+      const res = await api.get("/auth/me");
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("Error al verificar sesión:", err);
+      setIsAuthenticated(false);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-   useEffect(() => {
+  useEffect(() => {
     checkSession();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loading, user }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        login,
+        logout,
+        loading,
+        user,
+        setUser, 
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

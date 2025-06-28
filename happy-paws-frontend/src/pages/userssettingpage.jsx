@@ -7,10 +7,12 @@ import ClickPopup from "../components/clickpopup.jsx";
 import api from "../services/api.js";
 import bgimage from "../assets/bannerHoriz.jpg";
 import { deleteUserById, updateUserProfile } from "../services/UserService";
+import { useAuth } from "../context/AuthContext"; // 👈 agregado
 
 export default function UserSettingPage() {
   const navigate = useNavigate();
   const { id: routeId } = useParams();
+  const { user, setUser } = useAuth(); // 👈 agregado
   const [editing, setEditing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -18,7 +20,6 @@ export default function UserSettingPage() {
   const [rolesList, setRolesList] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
 
   const [form, setForm] = useState({
     nombre: "",
@@ -84,12 +85,20 @@ export default function UserSettingPage() {
         DUI: dui,
         rol: rol,
       });
+
+      // 👇 Actualiza el AuthContext si es el usuario actual
+      if (routeId === user?.id) {
+        const res = await api.get("/auth/me");
+        setUser(res.data);
+      }
+
       setModalType("success");
       setEditing(false);
     } catch (error) {
       console.error(error);
       setModalType("error");
     } finally {
+      setIsSaving(false);
       setShowModal(true);
     }
   };
@@ -234,7 +243,7 @@ export default function UserSettingPage() {
                 type="button"
                 onClick={() => {
                   setEditing(false);
-                  fetchUser(); 
+                  fetchUser();
                 }}
                 className="px-6 py-2 rounded-full font-semibold bg-gray-300 text-negrito hover:bg-gray-400 transition"
               >
@@ -283,9 +292,7 @@ export default function UserSettingPage() {
 function Field({ label, name, type, value, onChange, editing, options }) {
   return (
     <div className="space-y-1">
-      <label className="block text-sm font-semibold text-moradito">
-        {label}
-      </label>
+      <label className="block text-sm font-semibold text-moradito">{label}</label>
       {editing ? (
         type === "select" ? (
           <select
